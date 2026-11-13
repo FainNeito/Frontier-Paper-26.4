@@ -63,7 +63,6 @@ import net.minecraft.commands.arguments.MessageArgument;
 import net.minecraft.commands.arguments.ObjectiveCriteriaArgument;
 import net.minecraft.commands.arguments.RangeArgument;
 import net.minecraft.commands.arguments.ResourceArgument;
-import net.minecraft.commands.arguments.ResourceKeyArgument;
 import net.minecraft.commands.arguments.ScoreboardSlotArgument;
 import net.minecraft.commands.arguments.StyleArgument;
 import net.minecraft.commands.arguments.TeamColorArgument;
@@ -183,7 +182,7 @@ public class VanillaArgumentProviderImpl implements VanillaArgumentProvider {
 
     @Override
     public ArgumentType<BlockInWorldPredicate> blockInWorldPredicate() {
-        return this.wrap(BlockPredicateArgument.blockPredicate(PaperCommands.INSTANCE.getBuildContext()),
+        return this.wrap(BlockPredicateArgument.blockPredicate(),
             result -> (block, loadChunk) -> {
                 final BlockInWorld blockInWorld = new BlockInWorld(
                     ((CraftWorld) block.getWorld()).getHandle(),
@@ -256,7 +255,7 @@ public class VanillaArgumentProviderImpl implements VanillaArgumentProvider {
 
     @Override
     public ArgumentType<BlockState> blockState() {
-        return this.wrap(BlockStateArgument.block(PaperCommands.INSTANCE.getBuildContext()), (result) -> {
+        return this.wrap(BlockStateArgument.block(), (result) -> {
             final BlockState snapshot = CraftBlockStates.getBlockState(CraftRegistry.getMinecraftRegistry(), BlockPos.ZERO, result.getState(), null);
             if (result.tag != null && snapshot instanceof final CraftBlockEntityState<?> blockEntitySnapshot) {
                 blockEntitySnapshot.loadData(result.tag);
@@ -267,14 +266,14 @@ public class VanillaArgumentProviderImpl implements VanillaArgumentProvider {
 
     @Override
     public ArgumentType<ItemStack> itemStack() {
-        return this.wrap(ItemArgument.item(PaperCommands.INSTANCE.getBuildContext()), (result) -> {
+        return this.wrap(ItemArgument.item(), (result) -> {
             return CraftItemStack.asBukkitCopy(result.createItemStack(1));
         });
     }
 
     @Override
     public ArgumentType<ItemStackPredicate> itemStackPredicate() {
-        return this.wrap(ItemPredicateArgument.itemPredicate(PaperCommands.INSTANCE.getBuildContext()), type -> itemStack -> type.test(CraftItemStack.asNMSCopy(itemStack)));
+        return this.wrap(ItemPredicateArgument.itemPredicate(), type -> itemStack -> type.test(CraftItemStack.asNMSCopy(itemStack)));
     }
 
     @Override
@@ -290,12 +289,12 @@ public class VanillaArgumentProviderImpl implements VanillaArgumentProvider {
 
     @Override
     public ArgumentType<Component> component() {
-        return this.wrap(ComponentArgument.textComponent(PaperCommands.INSTANCE.getBuildContext()), PaperAdventure::asAdventure);
+        return this.wrap(ComponentArgument.textComponent(), PaperAdventure::asAdventure);
     }
 
     @Override
     public ArgumentType<Style> style() {
-        return this.wrap(StyleArgument.style(PaperCommands.INSTANCE.getBuildContext()), PaperAdventure::asAdventure);
+        return this.wrap(StyleArgument.style(), PaperAdventure::asAdventure);
     }
 
     @Override
@@ -345,7 +344,7 @@ public class VanillaArgumentProviderImpl implements VanillaArgumentProvider {
     public ArgumentType<World> world() {
         return this.wrap(DimensionArgument.dimension(), dimensionLocation -> {
             // based on DimensionArgument#getDimension
-            final ResourceKey<Level> resourceKey = ResourceKey.create(Registries.DIMENSION, dimensionLocation);
+            final ResourceKey<Level> resourceKey = dimensionLocation;
             final @Nullable ServerLevel serverLevel = MinecraftServer.getServer().getLevel(resourceKey);
             if (serverLevel == null) {
                 throw DimensionArgument.ERROR_INVALID_VALUE.create(dimensionLocation);
@@ -398,8 +397,8 @@ public class VanillaArgumentProviderImpl implements VanillaArgumentProvider {
     @Override
     public <T> ArgumentType<TypedKey<T>> resourceKey(final RegistryKey<T> registryKey) {
         return this.wrap(
-            ResourceKeyArgument.key(PaperRegistries.registryToNms(registryKey)),
-            nmsRegistryKey -> TypedKey.create(registryKey, CraftNamespacedKey.fromMinecraft(nmsRegistryKey.identifier()))
+            IdentifierArgument.id(),
+            nmsRegistryKey -> TypedKey.create(registryKey, CraftNamespacedKey.fromMinecraft(nmsRegistryKey))
         );
     }
 
@@ -412,7 +411,7 @@ public class VanillaArgumentProviderImpl implements VanillaArgumentProvider {
     private <T, K extends Keyed> ArgumentType<T> resourceRaw(final RegistryKey registryKeyRaw) { // TODO remove Keyed
         final RegistryKey<K> registryKey = registryKeyRaw;
         return (ArgumentType<T>) this.wrap(
-            ResourceArgument.resource(PaperCommands.INSTANCE.getBuildContext(), PaperRegistries.registryToNms(registryKey)),
+            ResourceArgument.resource(PaperRegistries.registryToNms(registryKey)),
             resource -> requireNonNull(
                 RegistryAccess.registryAccess()
                     .getRegistry(registryKey)

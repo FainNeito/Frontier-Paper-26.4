@@ -71,6 +71,8 @@ public final class DamageTypeTags {
 
     public static final Tag<DamageType> NO_ANGER = getTag("no_anger");
 
+    public static final Tag<DamageType> NO_HURT_SOUND = getTag("no_hurt_sound");
+
     public static final Tag<DamageType> NO_IMPACT = getTag("no_impact");
 
     public static final Tag<DamageType> NO_KNOCKBACK = getTag("no_knockback");

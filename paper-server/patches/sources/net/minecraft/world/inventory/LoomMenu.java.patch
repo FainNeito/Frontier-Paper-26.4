@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/LoomMenu.java
 +++ b/net/minecraft/world/inventory/LoomMenu.java
-@@ -38,21 +_,23 @@
+@@ -38,21 +38,23 @@
      private final Slot patternSlot;
      private final Slot resultSlot;
      private long lastSoundTime;
@@ -39,7 +39,7 @@
  
      public LoomMenu(final int containerId, final Inventory inventory) {
          this(containerId, inventory, ContainerLevelAccess.NULL);
-@@ -61,6 +_,35 @@
+@@ -61,6 +63,35 @@
      public LoomMenu(final int containerId, final Inventory inventory, final ContainerLevelAccess access) {
          super(MenuType.LOOM, containerId);
          this.access = access;
@@ -72,10 +72,10 @@
 +            }
 +            // CraftBukkit end
 +        };
-         this.bannerSlot = this.addSlot(new Slot(this.inputContainer, 0, 13, 26) {
+         this.bannerSlot = this.addSlot(new Slot(this.inputContainer, 0, 13, 26, Slot.Section.INPUT) {
              @Override
              public boolean mayPlace(final ItemStack itemStack) {
-@@ -106,6 +_,7 @@
+@@ -106,6 +137,7 @@
          this.addStandardInventorySlots(inventory, 8, 84);
          this.addDataSlot(this.selectedBannerPatternIndex);
          this.patternGetter = inventory.player.registryAccess().lookupOrThrow(Registries.BANNER_PATTERN);
@@ -83,7 +83,7 @@
      }
  
      private static boolean isPatternItem(final ItemStack itemStack) {
-@@ -118,14 +_,39 @@
+@@ -118,14 +150,39 @@
  
      @Override
      public boolean stillValid(final Player player) {
@@ -125,7 +125,7 @@
              return true;
          } else {
              return false;
-@@ -187,7 +_,8 @@
+@@ -187,7 +244,8 @@
                  this.resultSlot.set(ItemStack.EMPTY);
              }
  
@@ -135,7 +135,7 @@
          } else {
              this.resultSlot.set(ItemStack.EMPTY);
              this.selectablePatterns = List.of();
-@@ -277,7 +_,14 @@
+@@ -277,7 +335,14 @@
                  result.update(
                      DataComponents.BANNER_PATTERNS,
                      BannerPatternLayers.EMPTY,

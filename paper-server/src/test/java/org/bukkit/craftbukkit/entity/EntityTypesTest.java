@@ -118,6 +118,7 @@ public class EntityTypesTest {
             PiglinAbstract.class,
             Projectile.class,
             Raider.class,
+            org.bukkit.entity.RangedZombie.class, // Abstract base shared by drowned and frostbite; no registry entry.
             Sittable.class,
             SizedFireball.class,
             Spellcaster.class,

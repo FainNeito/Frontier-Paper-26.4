@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/animal/equine/Llama.java
 +++ b/net/minecraft/world/entity/animal/equine/Llama.java
-@@ -73,18 +_,19 @@
+@@ -73,18 +73,19 @@
          .scale(0.5F);
      private boolean didSpit;
      private @Nullable Llama caravanHead;
@@ -22,7 +22,7 @@
          this.entityData.set(DATA_STRENGTH_ID, Math.max(1, Math.min(5, strength)));
      }
  
-@@ -189,12 +_,12 @@
+@@ -189,12 +190,12 @@
              heal = 10.0F;
              if (this.isTamed() && this.getAge() == 0 && this.canFallInLove()) {
                  itemUsed = true;
@@ -31,13 +31,13 @@
              }
          }
  
-         if (this.getHealth() < this.getMaxHealth() && heal > 0.0F) {
--            this.heal(heal);
-+            this.heal(heal, org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.EATING); // Paper - Add missing regain reason
+         if (this.canHealNaturally() && heal > 0.0F) {
+-            this.healNaturally(heal);
++            this.healNaturally(heal, org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.EATING); // Paper - Add missing regain reason
              itemUsed = true;
          }
  
-@@ -306,7 +_,7 @@
+@@ -306,7 +307,7 @@
  
      @Override
      public int getMaxTemper() {

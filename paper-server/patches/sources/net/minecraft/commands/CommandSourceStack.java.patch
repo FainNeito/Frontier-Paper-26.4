@@ -1,15 +1,15 @@
 --- a/net/minecraft/commands/CommandSourceStack.java
 +++ b/net/minecraft/commands/CommandSourceStack.java
-@@ -48,7 +_,7 @@
+@@ -35,7 +35,7 @@
  import net.minecraft.world.phys.Vec3;
  import org.jspecify.annotations.Nullable;
  
--public class CommandSourceStack implements SharedSuggestionProvider, ExecutionCommandSource<CommandSourceStack> {
-+public class CommandSourceStack implements SharedSuggestionProvider, ExecutionCommandSource<CommandSourceStack>, io.papermc.paper.command.brigadier.PaperCommandSourceStack { // Paper - Brigadier API
+-public class CommandSourceStack implements ExecutionCommandSource<CommandSourceStack>, PermissionSetSupplier {
++public class CommandSourceStack implements ExecutionCommandSource<CommandSourceStack>, PermissionSetSupplier, io.papermc.paper.command.brigadier.PaperCommandSourceStack {
      public static final SimpleCommandExceptionType ERROR_NOT_PLAYER = new SimpleCommandExceptionType(Component.translatable("permissions.requires.player"));
      public static final SimpleCommandExceptionType ERROR_NOT_ENTITY = new SimpleCommandExceptionType(Component.translatable("permissions.requires.entity"));
      public final CommandSource source;
-@@ -64,6 +_,7 @@
+@@ -51,6 +51,7 @@
      private final Vec2 rotation;
      private final CommandSigningContext signingContext;
      private final TaskChainer chatMessageChainer;
@@ -17,7 +17,7 @@
  
      public CommandSourceStack(
          final CommandSource source,
-@@ -206,6 +_,29 @@
+@@ -193,6 +194,29 @@
              );
      }
  
@@ -47,7 +47,7 @@
      public CommandSourceStack withRotation(final Vec2 rotation) {
          return this.rotation.equals(rotation)
              ? this
-@@ -388,6 +_,32 @@
+@@ -375,6 +399,32 @@
          return this.permissions;
      }
  
@@ -80,7 +80,7 @@
      public Vec3 getPosition() {
          return this.worldPosition;
      }
-@@ -491,20 +_,25 @@
+@@ -478,20 +528,25 @@
          GameRules gameRules = this.level.getGameRules();
          if (gameRules.get(GameRules.SEND_COMMAND_FEEDBACK)) {
              for (ServerPlayer player : this.server.getPlayerList().getPlayers()) {
@@ -109,16 +109,7 @@
          }
      }
  
-@@ -515,7 +_,7 @@
- 
-     @Override
-     public Collection<String> getOnlinePlayerNames() {
--        return List.of(this.server.getPlayerNames());
-+        return this.entity instanceof ServerPlayer sourcePlayer && !sourcePlayer.getBukkitEntity().hasPermission("paper.bypass-visibility.tab-completion") ? this.getServer().getPlayerList().getPlayers().stream().filter(serverPlayer -> sourcePlayer.getBukkitEntity().canSee(serverPlayer.getBukkitEntity())).map(serverPlayer -> serverPlayer.getGameProfile().name()).toList() : List.of(this.server.getPlayerNames()); // Paper - Make CommandSourceStack respect hidden players
-     }
- 
-     @Override
-@@ -624,4 +_,16 @@
+@@ -563,4 +618,16 @@
              };
          }
      }

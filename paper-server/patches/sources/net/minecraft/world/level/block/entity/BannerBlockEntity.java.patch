@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/BannerBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/BannerBlockEntity.java
-@@ -48,7 +_,7 @@
+@@ -48,7 +48,7 @@
      @Override
      protected void saveAdditional(final ValueOutput output) {
          super.saveAdditional(output);
@@ -9,7 +9,7 @@
              output.store("patterns", BannerPatternLayers.CODEC, this.patterns);
          }
  
-@@ -59,7 +_,7 @@
+@@ -59,7 +59,7 @@
      protected void loadAdditional(final ValueInput input) {
          super.loadAdditional(input);
          this.name = parseCustomNameSafe(input, "CustomName");
@@ -18,14 +18,14 @@
      }
  
      @Override
-@@ -67,9 +_,18 @@
+@@ -67,9 +67,18 @@
          return ClientboundBlockEntityDataPacket.create(this);
      }
  
 +    // Paper start - always send patterns to client
 +    ThreadLocal<Boolean> serialisingForNetwork = ThreadLocal.withInitial(() -> Boolean.FALSE);
      @Override
-     public CompoundTag getUpdateTag(final HolderLookup.Provider registries) {
+     public CompoundTag getUpdateTag(final HolderGetter.Provider registries) {
 +        final Boolean wasSerialisingForNetwork = serialisingForNetwork.get();
 +        try {
 +            serialisingForNetwork.set(Boolean.TRUE);
@@ -37,7 +37,7 @@
      }
  
      public BannerPatternLayers getPatterns() {
-@@ -89,7 +_,7 @@
+@@ -89,7 +98,7 @@
      @Override
      protected void applyImplicitComponents(final DataComponentGetter components) {
          super.applyImplicitComponents(components);
@@ -46,7 +46,7 @@
          this.name = components.get(DataComponents.CUSTOM_NAME);
      }
  
-@@ -105,4 +_,13 @@
+@@ -105,4 +114,13 @@
          output.discard("patterns");
          output.discard("CustomName");
      }

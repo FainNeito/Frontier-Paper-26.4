@@ -1,0 +1,138 @@
+--- a/net/minecraft/commands/CommandBox.java
++++ b/net/minecraft/commands/CommandBox.java
+@@ -39,9 +39,11 @@
+         } else {
+             Predicate<? extends PermissionSetSupplier> requirement = node.getRequirement();
+             if (requirement instanceof PermissionProviderCheck<?> check) {
+-                return check.test(context);
++                return check.<PermissionSetSupplier>cast().test(context);
+             } else {
+-                throw new UnsupportedOperationException("Unsupported predicate: " + requirement + ", use PermissionProviderCheck instead");
++                if (requirement instanceof PaperPredicate<?> predicate) return ((PaperPredicate<PermissionSetSupplier>) predicate).test(context);
++                if (requirement == DEFAULT_ARGUMENT_PREDICATE) return true;
++                return false; // Unknown contexts fail closed; never grant plugin permissions implicitly.
+             }
+         }
+     }
+@@ -52,7 +54,19 @@
+         } else if (original == DEFAULT_ARGUMENT_PREDICATE) {
+             return PermissionProviderCheck.ALWAYS_PASS.cast();
+         } else {
+-            throw new UnsupportedOperationException("Unsupported predicate: " + original + ", use PermissionProviderCheck instead");
++            return (Predicate<T>) new PaperPredicate<>((Predicate<CommandSourceStack>) original);
++        }
++    }
++
++    private record PaperPredicate<T extends PermissionSetSupplier>(Predicate<CommandSourceStack> original)
++        implements Predicate<T>, Commands.RestrictedMarker {
++        @Override public boolean test(final T context) {
++            CommandSourceStack source = context instanceof CommandSourceStack stack ? stack
++                : context instanceof ParseContext parse ? parse.commandSourceStack() : null;
++            return source != null && this.original.test(source);
++        }
++        @Override public boolean restricted() {
++            return !(this.original instanceof Commands.RestrictedMarker marker) || marker.restricted();
+         }
+     }
+ 
+@@ -84,6 +98,7 @@
+     public abstract static class NodeConverter<I extends PermissionSetSupplier, O extends PermissionSetSupplier> {
+         private final Map<CommandNode<I>, CommandNode<O>> clonedNodes = new IdentityHashMap<>();
+         private final List<CommandNode<I>> postponedNodes = new ArrayList<>();
++        private final java.util.Set<CommandNode<I>> discovered = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
+ 
+         public CommandDispatcher<O> convert(final CommandDispatcher<I> input) {
+             return new CommandDispatcher<>(this.convert(input.getRoot()));
+@@ -92,13 +107,25 @@
+         public RootCommandNode<O> convert(final RootCommandNode<I> input) {
+             RootCommandNode<O> output = new RootCommandNode<>();
+             this.clonedNodes.put(input, output);
++            this.discovered.add(input);
+ 
+             for (CommandNode<I> child : input.getChildren()) {
+                 this.discoverNodes(child);
+             }
+ 
+-            for (CommandNode<I> postponedNode : this.postponedNodes) {
+-                this.resolvePostponedNodes(postponedNode);
++            while (!this.postponedNodes.isEmpty()) {
++                boolean progressed = false;
++                var iterator = this.postponedNodes.iterator();
++                while (iterator.hasNext()) {
++                    CommandNode<I> node = iterator.next();
++                    CommandNode<I> redirect = node.getRedirect();
++                    if (redirect == null || this.clonedNodes.containsKey(redirect)) {
++                        this.cloneNode(node, redirect == null ? null : this.clonedNodes.get(redirect));
++                        iterator.remove();
++                        progressed = true;
++                    }
++                }
++                if (!progressed) throw new IllegalArgumentException("Cyclic command redirect dependency");
+             }
+ 
+             this.clonedNodes.forEach(this::linkNodes);
+@@ -106,34 +133,19 @@
+         }
+ 
+         private void discoverNodes(final CommandNode<I> input) {
+-            CommandNode<I> redirect = input.getRedirect();
+-
+-            for (CommandNode<I> child : input.getChildren()) {
+-                this.discoverNodes(child);
+-            }
+-
+-            CommandNode<O> convertedRedirect = null;
+-            if (redirect != null) {
+-                convertedRedirect = this.clonedNodes.get(redirect);
+-                if (convertedRedirect == null) {
+-                    this.postponedNodes.add(input);
+-                    return;
+-                }
+-            }
+-
+-            this.cloneNode(input, convertedRedirect);
+-        }
+-
+-        private void resolvePostponedNodes(final CommandNode<I> input) {
+-            CommandNode<O> convertedRedirect = this.clonedNodes.get(input.getRedirect());
+-            if (convertedRedirect == null) {
+-                throw new UnsupportedOperationException("Double redirect or hidden subtree detected");
+-            }
+-
+-            this.cloneNode(input, convertedRedirect);
++            // Plugin aliases may redirect to detached roots or chains outside the visible root.
++            // Discover both edge types once, then resolve redirect dependencies before linking children.
++            if (!this.discovered.add(input)) return;
++            for (CommandNode<I> child : input.getChildren()) this.discoverNodes(child);
++            if (input.getRedirect() != null) this.discoverNodes(input.getRedirect());
++            this.postponedNodes.add(input);
+         }
+ 
+         private void cloneNode(final CommandNode<I> input, final @Nullable CommandNode<O> convertedRedirect) {
++            if (input instanceof RootCommandNode<I>) {
++                this.clonedNodes.put(input, new RootCommandNode<>());
++                return;
++            }
+             ArgumentBuilder<O, ?> output = this.convertTypeSpecific(input);
+             Predicate<O> convertedPredicate = this.convert(input.getRequirement());
+             if (convertedPredicate != null) {
+@@ -168,7 +180,7 @@
+         private ArgumentBuilder<O, ?> convertTypeSpecific(final CommandNode<I> input) {
+             return switch (input) {
+                 case ArgumentCommandNode<I, ?> argument -> {
+-                    RequiredArgumentBuilder<O, ?> result = RequiredArgumentBuilder.argument(argument.getName(), this.convert(argument.getType()));
++                    RequiredArgumentBuilder<O, ?> result = RequiredArgumentBuilder.argument(argument.getName(), this.convertArgument(argument));
+                     SuggestionProvider<I> customSuggestions = argument.getCustomSuggestions();
+                     if (customSuggestions != null) {
+                         result.suggests(this.convert(customSuggestions));
+@@ -189,6 +201,10 @@
+ 
+         protected abstract @Nullable SuggestionProvider<O> convert(SuggestionProvider<I> customSuggestions);
+ 
++        protected ArgumentType<?> convertArgument(final ArgumentCommandNode<I, ?> node) {
++            return this.convert(node.getType());
++        }
++
+         protected ArgumentType<?> convert(final ArgumentType<?> type) {
+             return type;
+         }

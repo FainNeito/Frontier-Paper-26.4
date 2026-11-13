@@ -1,0 +1,34 @@
+--- a/net/minecraft/commands/suggestions/CustomSuggestion.java
++++ b/net/minecraft/commands/suggestions/CustomSuggestion.java
+@@ -20,7 +20,13 @@
+         if (original instanceof CustomSuggestion.BrigadierWrapper<?> wrapper) {
+             return wrapper;
+         } else {
+-            throw new UnsupportedOperationException("Invalid suggestion type: " + original);
++            // Paper - adapt plugin callbacks to the separate snapshot-8 suggestion source.
++            ServerOnlyCustomSuggestion adapted = (server, context, builder) -> {
++                net.minecraft.commands.CommandSourceStack source = context.getSource().commandSourceStack();
++                if (source == null) return Suggestions.empty();
++                return ((SuggestionProvider) original).getSuggestions(((CommandContext) context).copyFor(source), builder);
++            };
++            return new CustomSuggestion.BrigadierWrapper<>(adapted);
+         }
+     }
+ 
+@@ -28,14 +34,14 @@
+         @Override
+         public CompletableFuture<Suggestions> getSuggestions(final CommandContext<T> context, final SuggestionsBuilder builder) throws CommandSyntaxException {
+             if (context.getSource() instanceof SuggestionContext) {
+-                return this.suggestion.generate(context, builder);
++                return this.suggestion.generate((CommandContext<? extends SuggestionContext>) (CommandContext<?>) context, builder);
+             } else {
+                 throw new UnsupportedOperationException("Invalid context: " + context.getSource());
+             }
+         }
+ 
+         public <S extends SuggestionContext> CustomSuggestion.BrigadierWrapper<S> cast() {
+-            return this;
++            return (CustomSuggestion.BrigadierWrapper<S>) (CustomSuggestion.BrigadierWrapper<?>) this;
+         }
+     }
+ }

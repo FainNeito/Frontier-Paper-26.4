@@ -1,0 +1,52 @@
+--- a/net/minecraft/world/entity/SteppedInterpolationHandler.java
++++ b/net/minecraft/world/entity/SteppedInterpolationHandler.java
+@@ -157,33 +_,7 @@
+                 case PositionPath.Linear(Vec3 pos):
+                     this.addStep(pos, yRot, xRot, weight);
+                     break;
+-                case PositionPath.Stepped var9:
+-                    PositionPath.Stepped var10000 = var9;
+-
+-                    try {
+-                        var10000.endPosition();
+-                    } catch (Throwable var18) {
+-                        throw new MatchException(var18.toString(), var18);
+-                    }
+-
+-                    var10000 = var9;
+-
+-                    try {
+-                        var25 = var10000.steps();
+-                    } catch (Throwable var17) {
+-                        throw new MatchException(var17.toString(), var17);
+-                    }
+-
+-                    List totalInterpolationTicks = var25;
+-                    List<PositionStep> steps = totalInterpolationTicks;
+-                    var10000 = var9;
+-
+-                    try {
+-                        var10000.startImmediately();
+-                    } catch (Throwable var16) {
+-                        throw new MatchException(var16.toString(), var16);
+-                    }
+-
++                case PositionPath.Stepped(Vec3 _, List<PositionStep> steps, boolean _):
+                     if (yRot == this.yRot() && xRot == this.xRot()) {
+                         for (PositionStep step : steps) {
+                             this.addStep(step.position(), yRot, xRot, step.tickOffset());
+@@ -192,12 +_,12 @@
+                         return;
+                     }
+ 
+-                    int totalInterpolationTicksx = getInterpolationTicks(steps);
++                    int totalInterpolationTicks = getInterpolationTicks(steps);
+                     int offset = 0;
+ 
+                     for (PositionStep step : steps) {
+                         offset += step.tickOffset();
+-                        float a = (float)offset / totalInterpolationTicksx;
++                        float a = (float)offset / totalInterpolationTicks;
+                         this.addStep(step.position(), Mth.rotLerp(a, this.yRot(), yRot), Mth.lerp(a, this.xRot(), xRot), step.tickOffset());
+                     }
+                     break;

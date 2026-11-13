@@ -140,6 +140,8 @@ public interface SulfurCube extends AbstractCubeMob, Shearable, Bucketable, Agea
         // Start generate - SulfurCubeArchetype
         Archetype BOUNCY = getArchetype("bouncy");
 
+        Archetype COLD = getArchetype("cold");
+
         Archetype EXPLOSIVE = getArchetype("explosive");
 
         Archetype FAST_FLAT = getArchetype("fast_flat");

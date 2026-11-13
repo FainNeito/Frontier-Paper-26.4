@@ -1,6 +1,6 @@
 --- a/net/minecraft/commands/arguments/selector/EntitySelector.java
 +++ b/net/minecraft/commands/arguments/selector/EntitySelector.java
-@@ -50,7 +_,7 @@
+@@ -55,7 +55,7 @@
  
              @Override
              protected String errorMessage(final String original, final CommandSyntaxException exception) {
@@ -9,12 +9,16 @@
              }
          }
      );
-@@ -119,7 +_,7 @@
+@@ -124,7 +124,11 @@
      }
  
-     private void checkPermissions(final CommandSourceStack sender) throws CommandSyntaxException {
+     private void checkPermissions(final PermissionSetSupplier sender) throws CommandSyntaxException {
 -        if (this.usesSelector && !sender.permissions().hasPermission(Permissions.COMMANDS_ENTITY_SELECTORS)) {
-+        if (!sender.bypassSelectorPermissions && this.usesSelector && !sender.hasPermission(Permissions.COMMANDS_ENTITY_SELECTORS, "minecraft.command.selector")) { // CraftBukkit // Paper - add bypass for selector perms
++        net.minecraft.commands.CommandSourceStack source = sender instanceof net.minecraft.commands.CommandSourceStack stack ? stack
++            : sender instanceof net.minecraft.commands.ParseContext context ? context.commandSourceStack() : null;
++        boolean allowed = source != null ? source.bypassSelectorPermissions || source.hasPermission(Permissions.COMMANDS_ENTITY_SELECTORS, "minecraft.command.selector")
++            : sender.permissions().hasPermission(Permissions.COMMANDS_ENTITY_SELECTORS);
++        if (this.usesSelector && !allowed) { // CraftBukkit // Paper - add bypass for selector perms
              throw EntityArgument.ERROR_SELECTORS_NOT_ALLOWED.create();
          }
      }

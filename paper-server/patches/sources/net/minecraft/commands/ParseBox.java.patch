@@ -1,0 +1,38 @@
+--- a/net/minecraft/commands/ParseBox.java
++++ b/net/minecraft/commands/ParseBox.java
+@@ -55,6 +55,26 @@
+ 
+     private static class ParseNodeConverter extends CommandBox.NodeConverter<CommandSourceStack, ParseContext> {
+         @Override
++        protected com.mojang.brigadier.arguments.ArgumentType<?> convertArgument(final com.mojang.brigadier.tree.ArgumentCommandNode<CommandSourceStack, ?> node) {
++            if ((Object) node instanceof io.papermc.paper.command.brigadier.argument.WrappedArgumentCommandNode<?, ?> wrapped) {
++                // Preserve the plugin's API result conversion when cloning the parse tree.
++                return new com.mojang.brigadier.arguments.ArgumentType<Object>() {
++                    @Override public Object parse(final StringReader reader) throws CommandSyntaxException {
++                        return this.parse(reader, CommandBox.grabParseContext());
++                    }
++                    @Override public <S> Object parse(final StringReader reader, final S context) throws CommandSyntaxException {
++                        CommandSourceStack source = context instanceof ParseContext parse ? parse.commandSourceStack()
++                            : context instanceof CommandSourceStack stack ? stack : null;
++                        if (source == null) throw new IllegalStateException("Plugin argument parsing requires a command source");
++                        return wrapped.frontierApiArgument().parse(reader, source);
++                    }
++                    @Override public java.util.Collection<String> getExamples() { return wrapped.frontierApiArgument().getExamples(); }
++                };
++            }
++            return super.convertArgument(node);
++        }
++
++        @Override
+         protected Predicate<ParseContext> convert(final Predicate<CommandSourceStack> requirement) {
+             return CommandBox.convertNodePermissionCheck(requirement);
+         }
+@@ -91,7 +111,7 @@
+         public ContextChain<CommandSourceStack> unpack() throws CommandSyntaxException {
+             Commands.validateParseResults(this.parseResults);
+             CommandContext<ParseContext> parsedContext = this.parseResults.getContext().build(this.commandString);
+-            CommandContext<CommandSourceStack> originalTypeContext = parsedContext;
++            CommandContext<CommandSourceStack> originalTypeContext = (CommandContext<CommandSourceStack>) (CommandContext<?>) parsedContext;
+             return ContextChain.tryFlatten(originalTypeContext)
+                 .orElseThrow(() -> CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand().createWithContext(this.parseResults.getReader()));
+         }

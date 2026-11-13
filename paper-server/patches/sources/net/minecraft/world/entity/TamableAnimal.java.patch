@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/TamableAnimal.java
 +++ b/net/minecraft/world/entity/TamableAnimal.java
-@@ -79,7 +_,7 @@
+@@ -79,7 +79,7 @@
          }
  
          this.orderedToSit = input.getBooleanOr("Sitting", false);
@@ -9,16 +9,16 @@
      }
  
      @Override
-@@ -135,7 +_,7 @@
+@@ -135,7 +135,7 @@
      protected void feed(final Player player, final InteractionHand hand, final ItemStack itemStack, final float healingFactor, final float defaultHeal) {
          FoodProperties foodProperties = itemStack.get(DataComponents.FOOD);
          this.usePlayerItem(player, hand, itemStack);
--        this.heal(foodProperties != null ? healingFactor * foodProperties.nutrition() : defaultHeal);
-+        this.heal(foodProperties != null ? healingFactor * foodProperties.nutrition() : defaultHeal, org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.EATING); // Paper - Add missing regain reason
+-        this.healNaturally(foodProperties != null ? healingFactor * foodProperties.nutrition() : defaultHeal);
++        this.healNaturally(foodProperties != null ? healingFactor * foodProperties.nutrition() : defaultHeal, org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.EATING); // Paper - Add missing regain reason
          this.playEatingSound();
      }
  
-@@ -144,6 +_,13 @@
+@@ -144,6 +144,13 @@
      }
  
      public void setInSittingPose(final boolean value) {
@@ -32,7 +32,7 @@
          byte current = this.entityData.get(DATA_FLAGS_ID);
          if (value) {
              this.entityData.set(DATA_FLAGS_ID, (byte)(current | 1));
-@@ -224,7 +_,12 @@
+@@ -224,7 +231,12 @@
          if (this.level() instanceof ServerLevel serverLevel
              && serverLevel.getGameRules().get(GameRules.SHOW_DEATH_MESSAGES)
              && this.getOwner() instanceof ServerPlayer serverPlayer) {
@@ -46,7 +46,7 @@
          }
  
          super.die(source);
-@@ -268,7 +_,14 @@
+@@ -268,7 +280,14 @@
              return false;
          }
  

@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/entity/monster/zombie/Zombie.java
 +++ b/net/minecraft/world/entity/monster/zombie/Zombie.java
-@@ -72,8 +_,10 @@
+@@ -72,8 +72,10 @@
  
  public class Zombie extends Monster {
      private static final Identifier SPEED_MODIFIER_BABY_ID = Identifier.withDefaultNamespace("baby");
@@ -13,7 +13,7 @@
      );
      private static final Identifier REINFORCEMENT_CALLER_CHARGE_ID = Identifier.withDefaultNamespace("reinforcement_caller_charge");
      private static final AttributeModifier ZOMBIE_REINFORCEMENT_CALLEE_CHARGE = new AttributeModifier(
-@@ -99,7 +_,7 @@
+@@ -99,7 +101,7 @@
      public static final Predicate<Difficulty> DOOR_BREAKING_PREDICATE = d -> d == Difficulty.HARD;
      private static final boolean DEFAULT_BABY = false;
      private static final boolean DEFAULT_CAN_BREAK_DOORS = false;
@@ -22,7 +22,7 @@
      private boolean canBreakDoors = false;
      public final ConversionTracker<Zombie> drowningTracker = new ConversionTracker<>(
          this,
-@@ -114,7 +_,7 @@
+@@ -114,7 +116,7 @@
          (converted, serverLevel) -> converted.handleAttributes(
              serverLevel.getCurrentDifficultyAt(converted.blockPosition()).getSpecialMultiplier(), EntitySpawnReason.CONVERSION
          )
@@ -31,7 +31,7 @@
      private final ConversionTracker<Zombie> freezingTracker = new ConversionTracker<>(
          this,
          DATA_FROSTBITE_CONVERSION_ID,
-@@ -128,10 +_,12 @@
+@@ -128,10 +130,12 @@
          (converted, serverLevel) -> converted.handleAttributes(
              serverLevel.getCurrentDifficultyAt(converted.blockPosition()).getSpecialMultiplier(), EntitySpawnReason.CONVERSION
          )
@@ -45,7 +45,7 @@
      }
  
      public Zombie(final Level level) {
-@@ -140,7 +_,7 @@
+@@ -140,7 +144,7 @@
  
      @Override
      protected void registerGoals() {
@@ -54,7 +54,7 @@
          this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
          this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
          this.addBehaviourGoals();
-@@ -153,7 +_,7 @@
+@@ -153,7 +157,7 @@
          this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
          this.targetSelector.addGoal(1, new HurtByTargetGoal(this).setAlertOthers(ZombifiedPiglin.class));
          this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
@@ -63,7 +63,7 @@
          this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
          this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
      }
-@@ -212,11 +_,16 @@
+@@ -212,11 +216,16 @@
  
      @Override
      protected int getBaseExperienceReward(final ServerLevel level) {
@@ -81,7 +81,7 @@
      }
  
      @Override
-@@ -262,6 +_,19 @@
+@@ -262,6 +271,19 @@
  
      @VisibleForTesting
      public boolean convertVillagerToZombieVillager(final ServerLevel level, final Villager villager) {
@@ -101,7 +101,7 @@
          ZombieVillager zombieVillager = villager.convertTo(
              EntityTypes.ZOMBIE_VILLAGER,
              ConversionParams.single(villager, true, true),
-@@ -274,17 +_,24 @@
+@@ -274,17 +296,24 @@
                  zombie.setGossips(villager.getGossips().copy());
                  zombie.setTradeOffers(villager.getOffers().copy());
                  zombie.setVillagerXp(villager.getVillagerXp());
@@ -133,7 +133,7 @@
  
      @Override
      public boolean hurtServer(final ServerLevel level, final DamageSource source, final float damage) {
-@@ -318,13 +_,13 @@
+@@ -318,13 +347,13 @@
                  if (SpawnPlacements.isSpawnPositionOk(type, level, spawnPos)
                      && SpawnPlacements.checkSpawnRules(type, level, EntitySpawnReason.REINFORCEMENT, spawnPos, level.getRandom())) {
                      reinforcement.setPos(xt, yt, zt);
@@ -150,7 +150,7 @@
                          AttributeInstance attribute = this.getAttribute(Attributes.SPAWN_REINFORCEMENTS_CHANCE);
                          AttributeModifier modifier = attribute.getModifier(REINFORCEMENT_CALLER_CHARGE_ID);
                          double existingAmount = modifier != null ? modifier.amount() : 0.0;
-@@ -348,7 +_,12 @@
+@@ -348,7 +377,12 @@
          if (result) {
              float difficulty = level.getCurrentDifficultyAt(this.blockPosition()).getEffectiveDifficulty();
              if (this.getMainHandItem().isEmpty() && this.isOnFire() && this.random.nextFloat() < difficulty * 0.3F) {
@@ -164,33 +164,36 @@
              }
          }
  
-@@ -426,6 +_,7 @@
+@@ -424,6 +458,7 @@
+         super.addAdditionalSaveData(output);
+         output.putBoolean("IsBaby", this.isBaby());
          output.putBoolean("CanBreakDoors", this.canBreakDoors());
-         this.drowningTracker.addAdditionalSaveData(output);
-         this.freezingTracker.addAdditionalSaveData(output);
-+        output.putBoolean("Paper.ShouldBurnInDay", this.shouldBurnInDay); // Paper - Add more Zombie API
-     }
- 
-     @Override
-@@ -435,13 +_,15 @@
++        output.putBoolean("Paper.ShouldBurnInDay", this.shouldBurnInDay);
+         if (this.convertsInWater()) {
+             this.drowningTracker.addAdditionalSaveData(output);
+         }
+@@ -438,6 +473,7 @@
+         super.readAdditionalSaveData(input);
+         this.setBaby(input.getBooleanOr("IsBaby", false));
          this.setCanBreakDoors(input.getBooleanOr("CanBreakDoors", false));
-         this.drowningTracker.readAdditionalSaveData(input);
-         this.freezingTracker.readAdditionalSaveData(input);
-+        this.shouldBurnInDay = input.getBooleanOr("Paper.ShouldBurnInDay", true); // Paper - Add more Zombie API
-     }
- 
++        this.shouldBurnInDay = input.getBooleanOr("Paper.ShouldBurnInDay", true);
+         if (this.convertsInWater()) {
+             this.drowningTracker.readAdditionalSaveData(input);
+         }
+@@ -450,10 +486,8 @@
      @Override
      public boolean killedEntity(final ServerLevel level, final LivingEntity entity, final DamageSource source) {
          boolean perished = super.killedEntity(level, entity, source);
 -        if ((level.getDifficulty() == Difficulty.NORMAL || level.getDifficulty() == Difficulty.HARD) && entity instanceof Villager villager) {
 -            if (level.getDifficulty() != Difficulty.HARD && this.random.nextBoolean()) {
-+        final double fallbackChance = level.getDifficulty() == Difficulty.HARD ? 100 : level.getDifficulty() == Difficulty.NORMAL ? 50 : 0; // Paper - Configurable chance of villager zombie infection - moved up from belows if
-+        if (this.random.nextDouble() * 100 < level.paperConfig().entities.behavior.zombieVillagerInfectionChance.or(fallbackChance) && entity instanceof Villager villager) { // Paper - Configurable chance of villager zombie infection
-+            if (false && level.getDifficulty() != Difficulty.HARD && this.random.nextBoolean()) { // Paper - Configurable chance of villager zombie infection - moved to "fallbackChance"
-                 return perished;
-             }
+-                return perished;
+-            }
++        final double fallbackChance = level.getDifficulty() == Difficulty.HARD ? 100 : level.getDifficulty() == Difficulty.NORMAL ? 50 : 0;
++        if (this.random.nextDouble() * 100 < level.paperConfig().entities.behavior.zombieVillagerInfectionChance.or(fallbackChance) && entity instanceof Villager villager) {
  
-@@ -476,7 +_,7 @@
+             if (this.convertVillagerToZombieVillager(level, villager)) {
+                 perished = false;
+@@ -486,7 +520,7 @@
          groupData = super.finalizeSpawn(level, difficulty, spawnReason, groupData);
          float difficultyModifier = difficulty.getSpecialMultiplier();
          if (spawnReason != EntitySpawnReason.CONVERSION) {
@@ -199,7 +202,7 @@
          }
  
          if (groupData == null) {
-@@ -503,7 +_,7 @@
+@@ -513,7 +547,7 @@
                              chicken.finalizeSpawn(level, difficulty, EntitySpawnReason.JOCKEY, null);
                              chicken.setChickenJockey(true);
                              this.startRiding(chicken, false, false);
@@ -208,7 +211,7 @@
                          }
                      }
                  }
-@@ -529,7 +_,7 @@
+@@ -539,7 +573,7 @@
      protected void onOffspringSpawnedFromEgg(final Player spawner, final Mob offspring) {
          if (this.level() instanceof ServerLevel serverLevel) {
              float difficultyModifier = serverLevel.getCurrentDifficultyAt(offspring.blockPosition()).getSpecialMultiplier();

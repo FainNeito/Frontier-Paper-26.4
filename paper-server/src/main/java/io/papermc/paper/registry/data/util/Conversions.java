@@ -34,11 +34,11 @@ public class Conversions {
         return globalInstance;
     }
 
-    private final RegistryOps.RegistryInfoLookup lookup;
+    private final net.minecraft.core.HolderGetter.Provider lookup;
     private final RegistryOps<Object> javaOps;
     private final WrapperAwareSerializer serializer;
 
-    public Conversions(final RegistryOps.RegistryInfoLookup lookup) {
+    public Conversions(final net.minecraft.core.HolderGetter.Provider lookup) {
         this.lookup = lookup;
         this.javaOps = RegistryOps.create(JavaOps.INSTANCE, lookup);
         this.serializer = new WrapperAwareSerializer(() -> this.javaOps);
@@ -52,7 +52,7 @@ public class Conversions {
             .getFirst();
     }
 
-    public RegistryOps.RegistryInfoLookup lookup() {
+    public net.minecraft.core.HolderGetter.Provider lookup() {
         return this.lookup;
     }
 

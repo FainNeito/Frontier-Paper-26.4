@@ -13,8 +13,10 @@ plugins {
 
 val paperMavenPublicUrl = "https://repo.papermc.io/repository/maven-public/"
 
+repositories { mavenLocal { content { includeModule("io.papermc", "mache") } } }
+
 dependencies {
-    mache("io.papermc:mache:26.4-snapshot-5+build.2")
+    mache("io.papermc:mache:26.4-snapshot-8+build.local-SNAPSHOT")
     paperclip("io.papermc:paperclip:3.0.4")
 }
 
@@ -107,6 +109,8 @@ abstract class MockitoAgentProvider : CommandLineArgumentProvider {
         return listOf("-javaagent:" + fileCollection.files.single().absolutePath)
     }
 }
+
+repositories { mavenLocal { content { includeModule("io.papermc", "mache") } } }
 
 dependencies {
     implementation(project(":paper-api"))

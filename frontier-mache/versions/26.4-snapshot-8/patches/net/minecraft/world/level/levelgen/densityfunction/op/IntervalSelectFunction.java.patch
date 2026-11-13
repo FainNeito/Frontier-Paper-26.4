@@ -1,0 +1,26 @@
+--- a/net/minecraft/world/level/levelgen/densityfunction/op/IntervalSelectFunction.java
++++ b/net/minecraft/world/level/levelgen/densityfunction/op/IntervalSelectFunction.java
+@@ -133,21 +_,8 @@
+                         i++;
+                     }
+                 } finally {
+-                    DensityBuffer[] var14 = buffers;
+-                    int var15 = var14.length;
+-                    int var16 = 0;
+-
+-                    while (true) {
+-                        if (var16 >= var15) {
+-                            ;
+-                        } else {
+-                            DensityBuffer buffer = var14[var16];
+-                            if (buffer != outputBuffer && buffer instanceof ScopedDensityBuffer scoped) {
+-                                scoped.close();
+-                            }
+-
+-                            var16++;
+-                        }
++                    for (final DensityBuffer buffer : buffers) {
++                        if (buffer != outputBuffer && buffer instanceof final ScopedDensityBuffer scopedDensityBuffer) scopedDensityBuffer.close();
+                     }
+                 }
+             }

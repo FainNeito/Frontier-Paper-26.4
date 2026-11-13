@@ -11,7 +11,7 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.CommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import io.papermc.paper.command.brigadier.argument.FrontierArgumentTypes;
 
 import java.util.function.Predicate;
 
@@ -34,13 +34,15 @@ public class WrappedArgumentCommandNode<NMS, API> extends ArgumentCommandNode<Co
         final SuggestionProvider<CommandSourceStack> customSuggestions
     ) {
         super(name, nmsNativeType, command, requirement, redirect, modifier, forks, customSuggestions);
-        if (!ArgumentTypeInfos.isClassRecognized(nmsNativeType.getClass())) {
+        if (!FrontierArgumentTypes.isRecognized(nmsNativeType)) {
             // Is this argument an NMS argument?
             throw new IllegalArgumentException("Unexpected argument type was passed: " + nmsNativeType.getClass() + ". This should be an NMS type!");
         }
 
         this.pureArgumentType = pureArgumentType;
     }
+
+    public ArgumentType<API> frontierApiArgument() { return this.pureArgumentType; }
 
     // See ArgumentCommandNode#parse
     @Override

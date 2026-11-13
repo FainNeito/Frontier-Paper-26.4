@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/storage/TagValueOutput.java
 +++ b/net/minecraft/world/level/storage/TagValueOutput.java
-@@ -24,6 +_,23 @@
+@@ -24,6 +24,23 @@
          this.output = output;
      }
  
@@ -14,13 +14,13 @@
 +
 +    public static TagValueOutput createWrappingWithContext(
 +        final ProblemReporter problemReporter,
-+        final HolderLookup.Provider lookup,
++        final net.minecraft.core.HolderGetter.Provider lookup,
 +        final CompoundTag output
 +    ) {
 +        return new TagValueOutput(problemReporter, lookup.createSerializationContext(NbtOps.INSTANCE), output);
 +    }
 +    // Paper end - utility methods
 +
-     public static TagValueOutput createWithContext(final ProblemReporter problemReporter, final HolderLookup.Provider provider) {
+     public static TagValueOutput createWithContext(final ProblemReporter problemReporter, final HolderGetter.Provider provider) {
          return new TagValueOutput(problemReporter, provider.createSerializationContext(NbtOps.INSTANCE), new CompoundTag());
      }

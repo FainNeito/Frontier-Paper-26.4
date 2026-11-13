@@ -469,6 +469,8 @@ public interface BlockType extends Keyed, Translatable, net.kyori.adventure.tran
 
     BlockType.Typed<BlockData> BRICKS = getBlockType("bricks");
 
+    BlockType.Typed<Ageable> BRITTLE_ICE = getBlockType("brittle_ice");
+
     BlockType.Typed<Rotatable> BROWN_BANNER = getBlockType("brown_banner");
 
     BlockType.Typed<Bed> BROWN_BED = getBlockType("brown_bed");
@@ -530,6 +532,14 @@ public interface BlockType extends Keyed, Translatable, net.kyori.adventure.tran
     BlockType.Typed<Cake> CAKE = getBlockType("cake");
 
     BlockType.Typed<BlockData> CALCITE = getBlockType("calcite");
+
+    BlockType.Typed<Orientable> CALCITE_PILLAR = getBlockType("calcite_pillar");
+
+    BlockType.Typed<Slab> CALCITE_SLAB = getBlockType("calcite_slab");
+
+    BlockType.Typed<Stairs> CALCITE_STAIRS = getBlockType("calcite_stairs");
+
+    BlockType.Typed<Wall> CALCITE_WALL = getBlockType("calcite_wall");
 
     BlockType.Typed<CalibratedSculkSensor> CALIBRATED_SCULK_SENSOR = getBlockType("calibrated_sculk_sensor");
 
@@ -605,6 +615,8 @@ public interface BlockType extends Keyed, Translatable, net.kyori.adventure.tran
 
     BlockType.Typed<BlockData> CHISELED_NETHER_BRICKS = getBlockType("chiseled_nether_bricks");
 
+    BlockType.Typed<BlockData> CHISELED_PACKED_ICE = getBlockType("chiseled_packed_ice");
+
     BlockType.Typed<BlockData> CHISELED_POLISHED_BLACKSTONE = getBlockType("chiseled_polished_blackstone");
 
     BlockType.Typed<BlockData> CHISELED_QUARTZ_BLOCK = getBlockType("chiseled_quartz_block");
@@ -614,6 +626,8 @@ public interface BlockType extends Keyed, Translatable, net.kyori.adventure.tran
     BlockType.Typed<BlockData> CHISELED_RESIN_BRICKS = getBlockType("chiseled_resin_bricks");
 
     BlockType.Typed<BlockData> CHISELED_SANDSTONE = getBlockType("chiseled_sandstone");
+
+    BlockType.Typed<BlockData> CHISELED_SOULSHALE = getBlockType("chiseled_soulshale");
 
     BlockType.Typed<BlockData> CHISELED_STONE_BRICKS = getBlockType("chiseled_stone_bricks");
 
@@ -1191,6 +1205,10 @@ public interface BlockType extends Keyed, Translatable, net.kyori.adventure.tran
 
     BlockType.Typed<BlockData> ICE = getBlockType("ice");
 
+    BlockType.Typed<Directional> ICE_CRYSTAL = getBlockType("ice_crystal");
+
+    BlockType.Typed<Speleothem> ICICLE = getBlockType("icicle");
+
     BlockType.Typed<BlockData> INFESTED_CHISELED_STONE_BRICKS = getBlockType("infested_chiseled_stone_bricks");
 
     BlockType.Typed<BlockData> INFESTED_COBBLESTONE = getBlockType("infested_cobblestone");
@@ -1675,6 +1693,14 @@ public interface BlockType extends Keyed, Translatable, net.kyori.adventure.tran
 
     BlockType.Typed<BlockData> PACKED_ICE = getBlockType("packed_ice");
 
+    BlockType.Typed<Slab> PACKED_ICE_BRICK_SLAB = getBlockType("packed_ice_brick_slab");
+
+    BlockType.Typed<Stairs> PACKED_ICE_BRICK_STAIRS = getBlockType("packed_ice_brick_stairs");
+
+    BlockType.Typed<Wall> PACKED_ICE_BRICK_WALL = getBlockType("packed_ice_brick_wall");
+
+    BlockType.Typed<BlockData> PACKED_ICE_BRICKS = getBlockType("packed_ice_bricks");
+
     BlockType.Typed<BlockData> PACKED_MUD = getBlockType("packed_mud");
 
     BlockType.Typed<HangingMoss> PALE_HANGING_MOSS = getBlockType("pale_hanging_moss");
@@ -1812,6 +1838,22 @@ public interface BlockType extends Keyed, Translatable, net.kyori.adventure.tran
     BlockType.Typed<Stairs> POLISHED_BLACKSTONE_STAIRS = getBlockType("polished_blackstone_stairs");
 
     BlockType.Typed<Wall> POLISHED_BLACKSTONE_WALL = getBlockType("polished_blackstone_wall");
+
+    BlockType.Typed<BlockData> POLISHED_CALCITE = getBlockType("polished_calcite");
+
+    BlockType.Typed<Slab> POLISHED_CALCITE_BRICK_SLAB = getBlockType("polished_calcite_brick_slab");
+
+    BlockType.Typed<Stairs> POLISHED_CALCITE_BRICK_STAIRS = getBlockType("polished_calcite_brick_stairs");
+
+    BlockType.Typed<Wall> POLISHED_CALCITE_BRICK_WALL = getBlockType("polished_calcite_brick_wall");
+
+    BlockType.Typed<BlockData> POLISHED_CALCITE_BRICKS = getBlockType("polished_calcite_bricks");
+
+    BlockType.Typed<Slab> POLISHED_CALCITE_SLAB = getBlockType("polished_calcite_slab");
+
+    BlockType.Typed<Stairs> POLISHED_CALCITE_STAIRS = getBlockType("polished_calcite_stairs");
+
+    BlockType.Typed<Wall> POLISHED_CALCITE_WALL = getBlockType("polished_calcite_wall");
 
     BlockType.Typed<BlockData> POLISHED_CINNABAR = getBlockType("polished_cinnabar");
 
@@ -2242,6 +2284,14 @@ public interface BlockType extends Keyed, Translatable, net.kyori.adventure.tran
     BlockType.Typed<Snow> SNOW = getBlockType("snow");
 
     BlockType.Typed<BlockData> SNOW_BLOCK = getBlockType("snow_block");
+
+    BlockType.Typed<Slab> SNOW_BRICK_SLAB = getBlockType("snow_brick_slab");
+
+    BlockType.Typed<Stairs> SNOW_BRICK_STAIRS = getBlockType("snow_brick_stairs");
+
+    BlockType.Typed<Wall> SNOW_BRICK_WALL = getBlockType("snow_brick_wall");
+
+    BlockType.Typed<BlockData> SNOW_BRICKS = getBlockType("snow_bricks");
 
     BlockType.Typed<Campfire> SOUL_CAMPFIRE = getBlockType("soul_campfire");
 

@@ -914,7 +914,7 @@ public final class CraftServer implements Server {
                 return false;
             }
             Commands.validateParseResults(results);
-            commands.performCommand(results, command, true);
+            commands.performCommand(sourceStack, commands.parseBox().parse(command, net.minecraft.commands.ParseContext.of(sourceStack)), command, true);
             return true;
         } catch (CommandException ex) {
             new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerCommandException(ex, target, sender, args)).callEvent(); // Paper
@@ -1267,7 +1267,6 @@ public final class CraftServer implements Server {
             genSettingsFinal,
             dimensionKey,
             customStem,
-            primaryLevelData.isDebugWorld(),
             creator.environment() == Environment.NORMAL ? list : ImmutableList.of(),
             true,
             actualDimension,
@@ -2648,7 +2647,7 @@ public final class CraftServer implements Server {
         Preconditions.checkArgument(selector != null, "selector cannot be null");
         Preconditions.checkArgument(sender != null, "CommandSender sender cannot be null");
 
-        EntityArgument arg = EntityArgument.entities();
+        EntityArgument arg = (EntityArgument) net.minecraft.commands.arguments.SerializableArgument.unwrapOrThrow(EntityArgument.entities()).argument();
         List<? extends net.minecraft.world.entity.Entity> entities;
 
         try {

@@ -261,6 +261,7 @@ public class CraftBlockData implements BlockData {
         register(net.minecraft.world.level.block.BigDripleafStemBlock.class, org.bukkit.craftbukkit.block.impl.CraftBigDripleafStem::new);
         register(net.minecraft.world.level.block.BlastFurnaceBlock.class, org.bukkit.craftbukkit.block.impl.CraftBlastFurnace::new);
         register(net.minecraft.world.level.block.BrewingStandBlock.class, org.bukkit.craftbukkit.block.impl.CraftBrewingStand::new);
+        register(net.minecraft.world.level.block.BrittleIceBlock.class, org.bukkit.craftbukkit.block.impl.CraftBrittleIce::new);
         register(net.minecraft.world.level.block.BrushableBlock.class, org.bukkit.craftbukkit.block.impl.CraftBrushable::new);
         register(net.minecraft.world.level.block.BubbleColumnBlock.class, org.bukkit.craftbukkit.block.impl.CraftBubbleColumn::new);
         register(net.minecraft.world.level.block.ButtonBlock.class, org.bukkit.craftbukkit.block.impl.CraftButton::new);
@@ -322,6 +323,8 @@ public class CraftBlockData implements BlockData {
         register(net.minecraft.world.level.block.HeavyCoreBlock.class, org.bukkit.craftbukkit.block.impl.CraftHeavyCore::new);
         register(net.minecraft.world.level.block.HopperBlock.class, org.bukkit.craftbukkit.block.impl.CraftHopper::new);
         register(net.minecraft.world.level.block.HugeMushroomBlock.class, org.bukkit.craftbukkit.block.impl.CraftHugeMushroom::new);
+        register(net.minecraft.world.level.block.IceCrystalBlock.class, org.bukkit.craftbukkit.block.impl.CraftIceCrystal::new);
+        register(net.minecraft.world.level.block.IcicleBlock.class, org.bukkit.craftbukkit.block.impl.CraftIcicle::new);
         register(net.minecraft.world.level.block.InfestedRotatedPillarBlock.class, org.bukkit.craftbukkit.block.impl.CraftInfestedRotatedPillar::new);
         register(net.minecraft.world.level.block.IronBarsBlock.class, org.bukkit.craftbukkit.block.impl.CraftIronBars::new);
         register(net.minecraft.world.level.block.JigsawBlock.class, org.bukkit.craftbukkit.block.impl.CraftJigsaw::new);

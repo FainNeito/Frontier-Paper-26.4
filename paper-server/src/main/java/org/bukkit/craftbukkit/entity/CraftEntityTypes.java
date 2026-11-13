@@ -340,6 +340,8 @@ public final class CraftEntityTypes {
         register(new EntityTypeData<>(EntityType.PUFFERFISH, PufferFish.class, CraftPufferFish::new, createLiving(net.minecraft.world.entity.EntityTypes.PUFFERFISH)));
         register(new EntityTypeData<>(EntityType.TROPICAL_FISH, TropicalFish.class, CraftTropicalFish::new, createLiving(net.minecraft.world.entity.EntityTypes.TROPICAL_FISH)));
         register(new EntityTypeData<>(EntityType.DROWNED, Drowned.class, CraftDrowned::new, createLiving(net.minecraft.world.entity.EntityTypes.DROWNED)));
+        register(new EntityTypeData<>(EntityType.FROSTBITE, org.bukkit.entity.Frostbite.class, CraftFrostbite::new, createLiving(net.minecraft.world.entity.EntityTypes.FROSTBITE)));
+        register(new EntityTypeData<>(EntityType.ICE_BALL, org.bukkit.entity.IceBall.class, CraftIceBall::new, spawnData -> new net.minecraft.world.entity.projectile.throwableitemprojectile.IceBall(spawnData.minecraftWorld(), spawnData.x(), spawnData.y(), spawnData.z(), new ItemStack(Items.ICE_BALL))));
         register(new EntityTypeData<>(EntityType.DOLPHIN, Dolphin.class, CraftDolphin::new, createLiving(net.minecraft.world.entity.EntityTypes.DOLPHIN)));
         register(new EntityTypeData<>(EntityType.CAT, Cat.class, CraftCat::new, createLiving(net.minecraft.world.entity.EntityTypes.CAT)));
         register(new EntityTypeData<>(EntityType.PANDA, Panda.class, CraftPanda::new, createLiving(net.minecraft.world.entity.EntityTypes.PANDA)));

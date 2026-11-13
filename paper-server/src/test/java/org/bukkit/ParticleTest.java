@@ -148,6 +148,12 @@ public class ParticleTest {
     }
 
     private <T extends ParticleOptions> void testEmptyData(Particle bukkit, net.minecraft.core.particles.ParticleType<T> minecraft) {
+        if (bukkit == Particle.ITEM_SNOWBALL) {
+            ItemParticleOption option = this.createAndTest(bukkit, minecraft, null, ItemParticleOption.class);
+            assertTrue(option.getItem().is(net.minecraft.world.item.Items.SNOWBALL));
+            assertEquals(1, option.getItem().count());
+            return;
+        }
         this.createAndTest(bukkit, minecraft, null, SimpleParticleType.class);
     }
 

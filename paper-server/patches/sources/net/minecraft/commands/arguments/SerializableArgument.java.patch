@@ -1,0 +1,44 @@
+--- a/net/minecraft/commands/arguments/SerializableArgument.java
++++ b/net/minecraft/commands/arguments/SerializableArgument.java
+@@ -37,7 +37,22 @@
+         if (original instanceof SerializableArgument.BrigadierWrapper<T> wrapper) {
+             return wrapper;
+         } else {
+-            throw new UnsupportedOperationException("Invalid argument type: " + original);
++            // Paper - normalize the Brigadier primitives exposed by the plugin API.
++            ArgumentType<?> mapped = switch (original) {
++                case com.mojang.brigadier.arguments.BoolArgumentType ignored -> BooleanArgument.bool();
++                case com.mojang.brigadier.arguments.IntegerArgumentType value -> IntegerArgument.integer(value.getMinimum(), value.getMaximum());
++                case com.mojang.brigadier.arguments.LongArgumentType value -> LongArgument.longArg(value.getMinimum(), value.getMaximum());
++                case com.mojang.brigadier.arguments.FloatArgumentType value -> FloatArgument.floatArg(value.getMinimum(), value.getMaximum());
++                case com.mojang.brigadier.arguments.DoubleArgumentType value -> DoubleArgument.doubleArg(value.getMinimum(), value.getMaximum());
++                case com.mojang.brigadier.arguments.StringArgumentType value -> switch (value.getType()) {
++                    case SINGLE_WORD -> StringArgument.word();
++                    case QUOTABLE_PHRASE -> StringArgument.string();
++                    case GREEDY_PHRASE -> StringArgument.greedyString();
++                };
++                case io.papermc.paper.command.brigadier.argument.CustomArgumentType<?, ?> value -> value.getNativeType();
++                default -> throw new UnsupportedOperationException("Invalid argument type: " + original);
++            };
++            return (SerializableArgument.BrigadierWrapper<T>) unwrapOrThrow(mapped);
+         }
+     }
+ 
+@@ -57,7 +72,7 @@
+         default <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
+             if (context.getSource() instanceof SuggestionContext) {
+                 try {
+-                    return this.argument().listSuggestions(context, builder);
++                    return this.argument().listSuggestions((CommandContext<? extends SuggestionContext>) (CommandContext<?>) context, builder);
+                 } catch (CommandSyntaxException e) {
+                     return Suggestions.empty();
+                 }
+@@ -106,6 +121,8 @@
+         public <S> T parse(final StringReader reader, final S source) throws CommandSyntaxException {
+             if (source instanceof ParseContext parseContext) {
+                 return this.argument.parse(reader, parseContext);
++            } else if (source instanceof net.minecraft.commands.CommandSourceStack stack) {
++                return this.argument.parse(reader, ParseContext.of(stack));
+             } else {
+                 throw new UnsupportedOperationException("Invalid context: " + source);
+             }

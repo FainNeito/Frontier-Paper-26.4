@@ -32,6 +32,7 @@ import static io.papermc.paper.registry.data.util.Checks.asConfigured;
 public class PaperSulfurCubeArchetypeRegistryEntry implements SulfurCubeArchetypeRegistryEntry {
 
     protected final Conversions conversions;
+    protected List<net.minecraft.world.item.enchantment.ConditionalEffect<net.minecraft.world.item.enchantment.effects.EnchantmentLocationBasedEffect>> locationBasedEffects = List.of();
     protected @Nullable HolderSet<Item> items;
     protected List<SulfurCubeArchetype.AttributeEntry> attributeModifiers;
     protected boolean buoyant;
@@ -47,6 +48,7 @@ public class PaperSulfurCubeArchetypeRegistryEntry implements SulfurCubeArchetyp
             return;
         }
 
+        this.locationBasedEffects = archetype.locationBasedEffects();
         this.items = archetype.items();
         this.attributeModifiers = archetype.attributeModifiers();
         this.buoyant = archetype.buoyant();
@@ -200,7 +202,8 @@ public class PaperSulfurCubeArchetypeRegistryEntry implements SulfurCubeArchetyp
                 Optional.ofNullable(this.explosion),
                 Optional.ofNullable(this.contactDamage),
                 asConfigured(this.knockbackModifiers, "knockbackModifiers"),
-                asConfigured(this.soundSettings, "soundSettings")
+                asConfigured(this.soundSettings, "soundSettings"),
+                List.copyOf(this.locationBasedEffects)
             );
         }
     }

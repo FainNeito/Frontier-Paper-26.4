@@ -131,6 +131,9 @@ public interface MenuType extends Keyed, io.papermc.paper.world.flag.FeatureDepe
      */
     MenuType.Typed<StonecutterView, LocationInventoryViewBuilder<StonecutterView>> STONECUTTER = get("stonecutter");
 
+    /** A jukebox playlist menu with three rows. */
+    MenuType.Typed<InventoryView, InventoryViewBuilder<InventoryView>> JUKEBOX = get("jukebox");
+
     /**
      * Typed represents a subtype of {@link MenuType}s that have a known
      * {@link InventoryView} type at compile time.

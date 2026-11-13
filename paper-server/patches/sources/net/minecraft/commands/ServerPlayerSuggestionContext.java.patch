@@ -1,0 +1,24 @@
+--- a/net/minecraft/commands/ServerPlayerSuggestionContext.java
++++ b/net/minecraft/commands/ServerPlayerSuggestionContext.java
+@@ -38,6 +38,9 @@
+     }
+ 
+     @Override
++    public CommandSourceStack commandSourceStack() { return this.serverPlayer.createCommandSourceStack(); }
++
++    @Override
+     public PermissionSet permissions() {
+         return this.serverPlayer.permissions();
+     }
+@@ -69,7 +72,10 @@
+ 
+     @Override
+     public Collection<String> onlinePlayerNames() {
+-        return List.of(this.server.getPlayerNames());
++        if (this.serverPlayer.getBukkitEntity().hasPermission("paper.bypass-visibility.tab-completion")) return List.of(this.server.getPlayerNames());
++        return this.server.getPlayerList().getPlayers().stream()
++            .filter(player -> this.serverPlayer.getBukkitEntity().canSee(player.getBukkitEntity()))
++            .map(player -> player.getGameProfile().name()).toList();
+     }
+ 
+     @Override

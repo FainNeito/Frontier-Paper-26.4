@@ -1,15 +1,15 @@
 --- a/net/minecraft/server/commands/EffectCommands.java
 +++ b/net/minecraft/server/commands/EffectCommands.java
-@@ -184,7 +_,7 @@
-         for (Entity entity : entities) {
-             if (entity instanceof LivingEntity livingEntity) {
-                 MobEffectInstance instance = new MobEffectInstance(effectHolder, duration, amplifier, false, particles);
--                tracker.track(livingEntity, livingEntity.addEffect(instance, source.getEntity()));
-+                tracker.track(livingEntity, livingEntity.addEffect(instance, source.getEntity(), org.bukkit.event.entity.EntityPotionEffectEvent.Cause.COMMAND)); // CraftBukkit
+@@ -211,7 +211,7 @@
+         for (Holder<MobEffect> effect : effects) {
+             int duration = computeDurationInTicks(seconds, effect.value());
+             MobEffectInstance instance = new MobEffectInstance(effect, duration, amplifier, false, particles);
+-            if (target.addEffect(instance, source)) {
++            if (target.addEffect(instance, source, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.COMMAND)) {
+                 applied++;
              }
          }
- 
-@@ -208,7 +_,7 @@
+@@ -236,7 +236,7 @@
  
          for (Entity entity : entities) {
              if (entity instanceof LivingEntity livingEntity) {
@@ -18,12 +18,12 @@
              }
          }
  
-@@ -221,7 +_,7 @@
+@@ -271,7 +271,7 @@
+         int removed = 0;
  
-         for (Entity entity : entities) {
-             if (entity instanceof LivingEntity livingEntity) {
--                tracker.track(livingEntity, livingEntity.removeEffect(effectHolder));
-+                tracker.track(livingEntity, livingEntity.removeEffect(effectHolder, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.COMMAND)); // CraftBukkit
+         for (Holder<MobEffect> effect : effects) {
+-            if (target.removeEffect(effect)) {
++            if (target.removeEffect(effect, org.bukkit.event.entity.EntityPotionEffectEvent.Cause.COMMAND)) {
+                 removed++;
              }
          }
- 

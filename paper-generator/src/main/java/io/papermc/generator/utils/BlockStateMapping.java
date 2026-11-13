@@ -137,6 +137,8 @@ public final class BlockStateMapping {
         .put("StandingSign", "Sign")
         .put("StrawBed", "Bed")
         .put("FenceGate", "Gate")
+        .put("Button", "Switch")
+        .put("Lever", "Switch")
         .buildOrThrow();
 
     private static final Set<Class<? extends Block>> BLOCK_SUFFIX_INTENDED = Set.of(

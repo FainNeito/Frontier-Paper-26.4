@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/level/ServerPlayerGameMode.java
 +++ b/net/minecraft/server/level/ServerPlayerGameMode.java
-@@ -52,17 +_,38 @@
+@@ -52,17 +52,38 @@
      private BlockPos delayedDestroyPos = BlockPos.ZERO;
      private int delayedTickStart;
      private int lastSentState = -1;
@@ -10,9 +10,11 @@
      public ServerPlayerGameMode(final ServerPlayer player) {
          this.player = player;
          this.level = player.level();
+-    }
+-
 +        this.gameTicks = (int) this.level.getLagCompensationTick(); // Paper - lag compensate eating; start in the same clock as tick()
-     }
- 
++    }
++
 +    @Deprecated @io.papermc.paper.annotation.DoNotUse // Paper
      public boolean changeGameModeForPlayer(final GameType gameModeForPlayer) {
 +        // Paper start - Expand PlayerGameModeChangeEvent
@@ -42,7 +44,7 @@
          Abilities abilities = this.player.getAbilities();
          this.setGameModeForPlayer(gameModeForPlayer, this.gameModeForPlayer);
          if (abilities.flying && gameModeForPlayer != GameType.SPECTATOR && this.isInRangeOfGround()) {
-@@ -73,13 +_,13 @@
+@@ -73,13 +94,13 @@
          this.level
              .getServer()
              .getPlayerList()
@@ -58,7 +60,7 @@
      }
  
      protected void setGameModeForPlayer(final GameType gameModeForPlayer, final @Nullable GameType previousGameModeForPlayer) {
-@@ -111,20 +_,27 @@
+@@ -111,20 +132,27 @@
      }
  
      public void tick() {
@@ -72,7 +74,7 @@
 +            if (blockState == null || blockState.isAir()) { // Paper - Don't allow digging into unloaded chunks
                  this.hasDelayedDestroy = false;
              } else {
--                float destroyProgress = this.incrementDestroyProgress(blockState, this.delayedDestroyPos, this.delayedTickStart);
+-                float destroyProgress = this.incrementDestroyProgress(blockState, this.delayedDestroyPos, this.gameTicks - this.delayedTickStart);
 +                float destroyProgress = this.incrementDestroyProgress(blockState, this.delayedDestroyPos, this.gameTicks - this.delayedTickStart); // Paper - fix delayed destroy using the start tick as ticks spent destroying
                  if (destroyProgress >= 1.0F) {
                      this.hasDelayedDestroy = false;
@@ -91,7 +93,7 @@
              if (blockState.isAir()) {
                  this.level.destroyBlockProgress(this.player.getId(), this.destroyPos, -1);
                  this.lastSentState = -1;
-@@ -167,6 +_,7 @@
+@@ -167,6 +195,7 @@
          final BlockPos pos, final ServerboundPlayerActionPacket.Action action, final Direction direction, final int maxY, final int sequence
      ) {
          if (!this.player.isWithinBlockInteractionRange(pos, 1.0)) {
@@ -99,7 +101,7 @@
              if (this.isDestroyingBlock && action == ServerboundPlayerActionPacket.Action.ABORT_DESTROY_BLOCK) {
                  this.abortDestroyBlock(pos, sequence);
              }
-@@ -184,16 +_,35 @@
+@@ -184,15 +213,34 @@
                  }
  
                  if (!this.level.mayInteract(this.player, pos)) {
@@ -126,18 +128,17 @@
                      this.destroyAndAck(pos, sequence, "creative destroy");
                      return;
                  }
- 
++
 +                // Spigot start - handle debug stick left click for non-creative
 +                if (this.player.getMainHandItem().is(net.minecraft.world.item.Items.DEBUG_STICK)
 +                    && ((net.minecraft.world.item.DebugStickItem) net.minecraft.world.item.Items.DEBUG_STICK).handleInteraction(this.player, this.level.getBlockState(pos), this.level, pos, false, this.player.getMainHandItem())) {
 +                    return;
 +                }
 +                // Spigot end
-+
+ 
                  if (this.player.blockActionRestricted(this.level, pos, this.gameModeForPlayer)) {
                      this.player.connection.send(new ClientboundBlockUpdatePacket(pos, this.level.getBlockState(pos)));
-                     this.debugLogging(pos, false, sequence, "block action restricted");
-@@ -203,7 +_,7 @@
+@@ -203,7 +251,7 @@
                  this.destroyProgressStart = this.gameTicks;
                  float progress = 1.0F;
                  BlockState blockState = this.level.getBlockState(pos);
@@ -146,10 +147,11 @@
                      EnchantmentHelper.onHitBlock(
                          this.level,
                          this.player.getMainHandItem(),
-@@ -218,6 +_,23 @@
+@@ -217,6 +265,23 @@
+                     blockState.attack(this.level, pos, this.player);
                      progress = blockState.getDestroyProgress(this.player, this.player.level(), pos);
                  }
- 
++
 +                // CraftBukkit start
 +                // Note that we don't need to resync blocks, block acks will handle it properly for everything but block entities already
 +                if (event.useItemInHand() == org.bukkit.event.Event.Result.DENY) {
@@ -166,11 +168,10 @@
 +                    progress = 2.0f;
 +                }
 +                // CraftBukkit end
-+
+ 
                  if (!blockState.isAir() && progress >= 1.0F) {
                      this.destroyAndAck(pos, sequence, "insta mine");
-                 } else {
-@@ -267,14 +_,22 @@
+@@ -267,14 +332,22 @@
  
      private void abortDestroyBlock(final BlockPos pos, final int sequence) {
          this.isDestroyingBlock = false;
@@ -195,7 +196,7 @@
      }
  
      public void destroyAndAck(final BlockPos pos, final int sequence, final String exitId) {
-@@ -288,21 +_,70 @@
+@@ -288,21 +361,70 @@
  
      public boolean destroyBlock(final BlockPos pos) {
          BlockState state = this.level.getBlockState(pos);
@@ -270,16 +271,17 @@
          BlockState adjustedState = block.playerWillDestroy(this.level, pos, state, this.player);
          boolean changed = this.level.removeBlock(pos, false);
          if (SharedConstants.DEBUG_BLOCK_BREAK) {
-@@ -313,17 +_,38 @@
+@@ -313,17 +435,38 @@
              block.destroy(this.level, pos, adjustedState);
          }
  
 -        if (this.player.preventsBlockDrops()) {
 -            return true;
 -        }
+-
 +        ItemStack destroyedWith = null; // Paper - Trigger bee_nest_destroyed trigger in the correct place
 +        boolean canDestroy = false; // Paper - Trigger bee_nest_destroyed trigger in the correct place
- 
++
 +        if (!this.player.preventsBlockDrops()) { // CraftBukkit
          ItemStack itemStack = this.player.getMainHandItem();
 -        ItemStack destroyedWith = itemStack.copy();
@@ -316,7 +318,7 @@
  
          return true;
      }
-@@ -339,6 +_,7 @@
+@@ -339,6 +482,7 @@
  
          int oldCount = itemStack.getCount();
          int oldDamage = itemStack.getDamageValue();
@@ -324,7 +326,7 @@
          InteractionResult result = itemStack.use(level, player, hand);
          ItemStack resultStack;
          if (result instanceof InteractionResult.Success success) {
-@@ -367,25 +_,70 @@
+@@ -367,25 +511,70 @@
          }
  
          if (!player.isUsingItem()) {
@@ -398,7 +400,7 @@
                  return InteractionResult.CONSUME;
              }
  
-@@ -426,7 +_,7 @@
+@@ -426,7 +615,7 @@
                  }
              }
  
@@ -407,7 +409,7 @@
                  UseOnContext context = new UseOnContext(player, hand, hitResult);
                  InteractionResult result;
                  if (player.hasInfiniteMaterials()) {
-@@ -449,6 +_,11 @@
+@@ -449,6 +638,11 @@
  
                  return result;
              } else {

@@ -265,6 +265,14 @@ public enum Effect {
     SULFUR_SPIKE_LAND(1052, Type.SOUND),
     SPELL_POTION_SPLASH(1053, Type.SOUND),
     INSTANT_POTION_SPLASH(1054, Type.SOUND),
+    /** Sound played when an icicle lands. */
+    ICICLE_LAND(1055, Type.SOUND),
+    /** Sound played when a zombie converts to a frostbite. */
+    ZOMBIE_CONVERTED_TO_FROSTBITE(1056, Type.SOUND),
+    /** Sound played when a frostbite converts to a zombie. */
+    FROSTBITE_CONVERTED_TO_ZOMBIE(1057, Type.SOUND),
+    /** Sound played when a drowned converts to a zombie. */
+    DROWNED_CONVERTED_TO_ZOMBIE(1058, Type.SOUND),
     /**
      * The sound played / particles shown when a composter is being attempted to
      * fill.

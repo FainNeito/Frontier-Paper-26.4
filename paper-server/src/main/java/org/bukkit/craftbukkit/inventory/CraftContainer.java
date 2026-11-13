@@ -236,88 +236,88 @@ public class CraftContainer extends AbstractContainerMenu {
 
     private void setupWorkbench(Container top, Container bottom) {
         // This code copied from ContainerWorkbench
-        this.addSlot(new Slot(top, 0, 124, 35));
+        this.addSlot(new Slot(top, 0, 124, 35, Slot.Section.RESULT));
 
         int row;
         int col;
 
         for (row = 0; row < 3; ++row) {
             for (col = 0; col < 3; ++col) {
-                this.addSlot(new Slot(top, 1 + col + row * 3, 30 + col * 18, 17 + row * 18));
+                this.addSlot(new Slot(top, 1 + col + row * 3, 30 + col * 18, 17 + row * 18, Slot.Section.INPUT));
             }
         }
 
         for (row = 0; row < 3; ++row) {
             for (col = 0; col < 9; ++col) {
-                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18, Slot.Section.INVENTORY));
             }
         }
 
         for (col = 0; col < 9; ++col) {
-            this.addSlot(new Slot(bottom, col, 8 + col * 18, 142));
+            this.addSlot(new Slot(bottom, col, 8 + col * 18, 142, Slot.Section.HOTBAR));
         }
         // End copy from ContainerWorkbench
     }
 
     private void setupAnvil(Container top, Container bottom) {
         // This code copied from ContainerAnvilAbstract
-        this.addSlot(new Slot(top, 0, 27, 47));
-        this.addSlot(new Slot(top, 1, 76, 47));
-        this.addSlot(new Slot(top, 2, 134, 47));
+        this.addSlot(new Slot(top, 0, 27, 47, Slot.Section.INPUT));
+        this.addSlot(new Slot(top, 1, 76, 47, Slot.Section.SECOND_INPUT));
+        this.addSlot(new Slot(top, 2, 134, 47, Slot.Section.RESULT));
 
         int row;
         int col;
 
         for (row = 0; row < 3; ++row) {
             for (col = 0; col < 9; ++col) {
-                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18, Slot.Section.INVENTORY));
             }
         }
 
         for (row = 0; row < 9; ++row) {
-            this.addSlot(new Slot(bottom, row, 8 + row * 18, 142));
+            this.addSlot(new Slot(bottom, row, 8 + row * 18, 142, Slot.Section.HOTBAR));
         }
         // End copy from ContainerAnvilAbstract
     }
 
     private void setupSmithing(Container top, Container bottom) {
         // This code copied from ContainerSmithing
-        this.addSlot(new Slot(top, 0, 8, 48));
-        this.addSlot(new Slot(top, 1, 26, 48));
-        this.addSlot(new Slot(top, 2, 44, 48));
-        this.addSlot(new Slot(top, 3, 98, 48));
+        this.addSlot(new Slot(top, 0, 8, 48, Slot.Section.INPUT));
+        this.addSlot(new Slot(top, 1, 26, 48, Slot.Section.INPUT));
+        this.addSlot(new Slot(top, 2, 44, 48, Slot.Section.SECOND_INPUT));
+        this.addSlot(new Slot(top, 3, 98, 48, Slot.Section.RESULT));
 
         int row;
         int col;
 
         for (row = 0; row < 3; ++row) {
             for (col = 0; col < 9; ++col) {
-                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18, Slot.Section.INVENTORY));
             }
         }
 
         for (row = 0; row < 9; ++row) {
-            this.addSlot(new Slot(bottom, row, 8 + row * 18, 142));
+            this.addSlot(new Slot(bottom, row, 8 + row * 18, 142, Slot.Section.HOTBAR));
         }
         // End copy from ContainerSmithing
     }
 
     private void setupStoneCutter(Container top, Container bottom) {
         // This code copied from ContainerStonecutter
-        this.addSlot(new Slot(top, 0, 20, 33));
-        this.addSlot(new Slot(top, 1, 143, 33));
+        this.addSlot(new Slot(top, 0, 20, 33, Slot.Section.INPUT));
+        this.addSlot(new Slot(top, 1, 143, 33, Slot.Section.RESULT));
 
         int row;
         int col;
 
         for (row = 0; row < 3; ++row) {
             for (col = 0; col < 9; ++col) {
-                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+                this.addSlot(new Slot(bottom, col + row * 9 + 9, 8 + col * 18, 84 + row * 18, Slot.Section.INVENTORY));
             }
         }
 
         for (row = 0; row < 9; ++row) {
-            this.addSlot(new Slot(bottom, row, 8 + row * 18, 142));
+            this.addSlot(new Slot(bottom, row, 8 + row * 18, 142, Slot.Section.HOTBAR));
         }
         // End copy from ContainerSmithing
     }

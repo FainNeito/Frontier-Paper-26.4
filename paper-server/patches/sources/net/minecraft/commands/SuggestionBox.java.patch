@@ -1,0 +1,10 @@
+--- a/net/minecraft/commands/SuggestionBox.java
++++ b/net/minecraft/commands/SuggestionBox.java
+@@ -49,6 +49,7 @@
+ 
+         @Override
+         public boolean isRestricted(final CommandNode<? extends PermissionSetSupplier> node) {
++            if (node.getRequirement() instanceof Commands.RestrictedMarker marker) return marker.restricted();
+             return !CommandBox.canNodeRun(node, this.noPermissionSource);
+         }
+     };

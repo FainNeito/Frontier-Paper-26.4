@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/levelgen/structure/StructureCheck.java
 +++ b/net/minecraft/world/level/levelgen/structure/StructureCheck.java
-@@ -47,8 +_,12 @@
+@@ -47,8 +47,12 @@
      private final Long2ObjectMap<Object2IntMap<Structure>> loadedChunks = new Long2ObjectOpenHashMap<>();
      private final Map<Structure, Long2BooleanMap> featureChecks = new HashMap<>();
      private final LongSet chunksWithoutStartsInStorage = new LongOpenHashSet();
@@ -11,9 +11,9 @@
 +        final ResourceKey<net.minecraft.world.level.dimension.LevelStem> levelStem,
 +    // Paper end - also store level stem
          final ChunkScanAccess storageAccess,
-         final RegistryAccess registryAccess,
+         final HolderGetter.Provider registryAccess,
          final StructureTemplateManager structureTemplateManager,
-@@ -60,7 +_,7 @@
+@@ -60,7 +64,7 @@
          final long seed,
          final DataFixer fixerUpper
      ) {
@@ -22,13 +22,12 @@
          this.registryAccess = registryAccess;
          this.structureTemplateManager = structureTemplateManager;
          this.chunkGenerator = chunkGenerator;
-@@ -69,7 +_,22 @@
+@@ -69,7 +73,22 @@
          this.biomeSource = biomeSource;
          this.climateSampler = randomState.createClimateSampler(SamplerContext.builder().enableCaches().build());
          this.seed = seed;
--    }
 +        this.levelStem = levelStem; // Paper - also store level stem
-+    }
+     }
 +
 +    // Paper start - add missing structure salt configs
 +    @Nullable
@@ -46,7 +45,7 @@
  
      public StructureCheckResult checkStart(final ChunkPos pos, final Structure structure, final StructurePlacement placement, final boolean requireUnreferenced) {
          long posKey = pos.pack();
-@@ -91,7 +_,7 @@
+@@ -91,7 +110,7 @@
              this.chunksWithoutStartsInStorage.add(posKey);
          }
  

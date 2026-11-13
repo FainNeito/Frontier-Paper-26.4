@@ -13,6 +13,8 @@ import org.jspecify.annotations.NullMarked;
 public class CraftJukebox extends CraftBlockData implements Jukebox {
     private static final BooleanProperty HAS_RECORD = JukeboxBlock.HAS_RECORD;
 
+    private static final BooleanProperty PLAYLIST_MODE = JukeboxBlock.PLAYLIST_MODE;
+
     public CraftJukebox(BlockState state) {
         super(state);
     }
@@ -25,5 +27,13 @@ public class CraftJukebox extends CraftBlockData implements Jukebox {
     @Override
     public void setHasRecord(final boolean hasRecord) {
         this.set(HAS_RECORD, hasRecord);
+    }
+
+    public boolean isPlaylistMode() {
+        return this.get(PLAYLIST_MODE);
+    }
+
+    public void setPlaylistMode(final boolean playlistMode) {
+        this.set(PLAYLIST_MODE, playlistMode);
     }
 }

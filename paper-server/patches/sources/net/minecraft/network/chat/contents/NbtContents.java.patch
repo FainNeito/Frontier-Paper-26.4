@@ -1,6 +1,6 @@
 --- a/net/minecraft/network/chat/contents/NbtContents.java
 +++ b/net/minecraft/network/chat/contents/NbtContents.java
-@@ -73,7 +_,7 @@
+@@ -73,7 +73,7 @@
                  }
              });
              Component resolvedSeparator = DataFixUtils.orElse(
@@ -8,4 +8,4 @@
 +                ComponentUtils.resolveSeparator(context, this.separator, recursionDepth), ComponentUtils.DEFAULT_NO_STYLE_SEPARATOR // Paper - validate separator
              );
              if (this.interpreting) {
-                 RegistryOps<Tag> registryOps = source.registryAccess().createSerializationContext(NbtOps.INSTANCE);
+                 RegistryOps<Tag> registryOps = source.holderGetters().createSerializationContext(NbtOps.INSTANCE);

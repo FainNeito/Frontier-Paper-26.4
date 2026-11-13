@@ -1,6 +1,6 @@
 --- a/net/minecraft/server/ServerAdvancementManager.java
 +++ b/net/minecraft/server/ServerAdvancementManager.java
-@@ -25,12 +_,19 @@
+@@ -25,12 +25,19 @@
          HolderLookup.RegistryLookup<Advancement> advancements = registries.lookupOrThrow(Registries.ADVANCEMENT);
          Builder<Identifier, AdvancementHolder> builder = ImmutableMap.builder();
          advancements.listElements().forEach(advancement -> {
@@ -10,8 +10,8 @@
 +                return;
 +            }
 +            // Spigot end
-             validate(registries, (Holder.Reference<Advancement>)advancement);
-             builder.put(advancement.key().identifier(), new AdvancementHolder(advancement.key().identifier(), advancement.value()));
+             validate((Holder.Reference<Advancement>)advancement);
+             builder.put(advancement.key().identifier(), AdvancementHolder.wrap((Holder.Reference<Advancement>)advancement));
          });
          this.advancements = builder.buildOrThrow();
          AdvancementTree tree = new AdvancementTree();

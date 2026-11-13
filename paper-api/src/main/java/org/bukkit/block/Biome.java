@@ -80,6 +80,8 @@ public interface Biome extends OldEnum<Biome>, Keyed, net.kyori.adventure.transl
 
     Biome GROVE = getBiome("grove");
 
+    Biome ICE_CAVES = getBiome("ice_caves");
+
     Biome ICE_SPIKES = getBiome("ice_spikes");
 
     Biome JAGGED_PEAKS = getBiome("jagged_peaks");

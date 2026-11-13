@@ -50,7 +50,10 @@ public enum Particle implements Keyed {
      * Uses {@link DustOptions} as DataType
      */
     DUST("dust", DustOptions.class),
+    /** @deprecated use {@link #ITEM} with a snowball item stack. */
+    @Deprecated(since = "26.4")
     ITEM_SNOWBALL("item_snowball"),
+    FREEZING("freezing"),
     ITEM_SLIME("item_slime"),
     HEART("heart"),
     /**

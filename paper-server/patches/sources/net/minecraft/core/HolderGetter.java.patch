@@ -1,0 +1,20 @@
+--- a/net/minecraft/core/HolderGetter.java
++++ b/net/minecraft/core/HolderGetter.java
+@@ -27,10 +27,16 @@
+     }
+ 
+     default Iterable<Holder<T>> getTagOrEmpty(final TagKey<T> id) {
+-        return DataFixUtils.orElse(this.get(id), List.<T>of());
++        return DataFixUtils.orElse(this.get(id), List.of());
+     }
+ 
+     interface Provider {
++        // Paper - real registry values used to pre-fill registry API builders.
++        default HolderLookup.Provider lookupForValueCopyViaBuilders() {
++            if (this instanceof HolderLookup.Provider provider) return provider;
++            throw new IllegalStateException("This lookup does not expose registry builder values");
++        }
++
+         <T> Optional<? extends HolderGetter<T>> lookup(final ResourceKey<? extends Registry<? extends T>> key);
+ 
+         default <T> HolderGetter<T> lookupOrThrow(final ResourceKey<? extends Registry<? extends T>> key) {

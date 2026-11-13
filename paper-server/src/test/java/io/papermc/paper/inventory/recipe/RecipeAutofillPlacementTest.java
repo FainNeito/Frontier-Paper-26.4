@@ -144,8 +144,8 @@ class RecipeAutofillPlacementTest {
         }
 
         final SimpleContainer furnace = new SimpleContainer(3); // input=0, fuel=1, result=2
-        final Slot inputSlot = new Slot(furnace, 0, 0, 0);
-        final Slot resultSlot = new Slot(furnace, 2, 0, 0);
+        final Slot inputSlot = new Slot(furnace, 0, 0, 0, Slot.Section.INPUT);
+        final Slot resultSlot = new Slot(furnace, 2, 0, 0, Slot.Section.RESULT);
         final List<Slot> clear = List.of(inputSlot, resultSlot);
 
         final AbstractCookingRecipe recipe = mock(AbstractCookingRecipe.class);
@@ -193,7 +193,7 @@ class RecipeAutofillPlacementTest {
         }
         final List<Slot> slots = new ArrayList<>();
         for (int i = 0; i < gridW * gridH; i++) {
-            slots.add(new Slot(gridContainer, i, 0, 0));
+            slots.add(new Slot(gridContainer, i, 0, 0, Slot.Section.INPUT));
         }
 
         final RecipeHolder<CraftingRecipe> holder = new RecipeHolder<>(null, recipe);

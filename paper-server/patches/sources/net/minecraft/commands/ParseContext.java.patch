@@ -1,0 +1,52 @@
+--- a/net/minecraft/commands/ParseContext.java
++++ b/net/minecraft/commands/ParseContext.java
+@@ -13,8 +13,12 @@
+ import net.minecraft.world.level.storage.loot.Validatable;
+ 
+ public interface ParseContext extends PermissionSetSupplier {
++    default @org.jspecify.annotations.Nullable CommandSourceStack commandSourceStack() { return null; }
++
+     default boolean allowsSelectors() {
+-        return this.permissions().hasPermission(Permissions.COMMANDS_ENTITY_SELECTORS);
++        CommandSourceStack source = this.commandSourceStack();
++        return source != null ? source.bypassSelectorPermissions || source.hasPermission(Permissions.COMMANDS_ENTITY_SELECTORS, "minecraft.command.selector")
++            : this.permissions().hasPermission(Permissions.COMMANDS_ENTITY_SELECTORS);
+     }
+ 
+     HolderGetter.Provider holderGetters();
+@@ -25,22 +29,22 @@
+ 
+     static ParseContext of(final CommandSourceStack sender) {
+         FeatureFlagSet enabledFeatures = sender.enabledFeatures();
+-        return new ParseContext.Simple(
+-            sender.permissions(),
+-            sender.getServer().reloadableRegistries().lookup().filterFeatures(enabledFeatures),
+-            enabledFeatures,
+-            ValidationWrapper.Provider.IMMEDIATE
+-        );
++        return new SourceAware(new ParseContext.Simple(sender.permissions(),
++            sender.getServer().reloadableRegistries().lookup().filterFeatures(enabledFeatures), enabledFeatures,
++            ValidationWrapper.Provider.IMMEDIATE), sender);
+     }
+ 
+     static ParseContext of(final ServerPlayer sender) {
+-        FeatureFlagSet enabledFeatures = sender.level().enabledFeatures();
+-        return new ParseContext.Simple(
+-            sender.permissions(),
+-            sender.level().getServer().reloadableRegistries().lookup().filterFeatures(enabledFeatures),
+-            enabledFeatures,
+-            ValidationWrapper.Provider.IMMEDIATE
+-        );
++        return of(sender.createCommandSourceStack());
++    }
++
++    record SourceAware(ParseContext delegate, CommandSourceStack commandSourceStack) implements ParseContext {
++        @Override public PermissionSet permissions() { return delegate.permissions(); }
++        @Override public HolderGetter.Provider holderGetters() { return delegate.holderGetters(); }
++        @Override public FeatureFlagSet enabledFeatures() { return delegate.enabledFeatures(); }
++        @Override public <T extends Validatable> ValidationWrapper<T> getOrCreateValidationWrapper(Holder<T> element, ContextKeySet keys) throws CommandSyntaxException {
++            return delegate.getOrCreateValidationWrapper(element, keys);
++        }
+     }
+ 
+     record Simple(

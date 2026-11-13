@@ -228,6 +228,9 @@ public abstract class PotionEffectType implements Keyed, Translatable, net.kyori
      */
     public static final PotionEffectType BREATH_OF_THE_NAUTILUS = getPotionEffectType(40, "breath_of_the_nautilus");
 
+    /** Causes entities to freeze. */
+    public static final PotionEffectType FREEZING = getPotionEffectType(41, "freezing");
+
     @NotNull
     private static PotionEffectType getPotionEffectType(int typeId, @NotNull @KeyPattern.Value String key) {
         PotionEffectType potionEffectType = Registry.MOB_EFFECT.getOrThrow(Key.key(Key.MINECRAFT_NAMESPACE, key));

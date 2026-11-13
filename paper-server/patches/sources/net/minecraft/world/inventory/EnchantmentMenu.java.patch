@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/inventory/EnchantmentMenu.java
 +++ b/net/minecraft/world/inventory/EnchantmentMenu.java
-@@ -31,19 +_,17 @@
+@@ -31,19 +31,17 @@
  
  public class EnchantmentMenu extends AbstractContainerMenu {
      private static final Identifier EMPTY_SLOT_LAPIS_LAZULI = Identifier.withDefaultNamespace("container/slot/lapis_lazuli");
@@ -25,7 +25,7 @@
  
      public EnchantmentMenu(final int containerId, final Inventory inventory) {
          this(containerId, inventory, ContainerLevelAccess.NULL);
-@@ -51,6 +_,22 @@
+@@ -51,6 +49,22 @@
  
      public EnchantmentMenu(final int containerId, final Inventory inventory, final ContainerLevelAccess access) {
          super(MenuType.ENCHANTMENT, containerId);
@@ -46,9 +46,9 @@
 +        };
 +        // Paper end - Add missing InventoryHolders
          this.access = access;
-         this.addSlot(new Slot(this.enchantSlots, 0, 15, 47) {
+         this.addSlot(new Slot(this.enchantSlots, 0, 15, 47, Slot.Section.INPUT) {
              @Override
-@@ -80,13 +_,14 @@
+@@ -80,13 +94,14 @@
          this.addDataSlot(DataSlot.shared(this.levelClue, 0));
          this.addDataSlot(DataSlot.shared(this.levelClue, 1));
          this.addDataSlot(DataSlot.shared(this.levelClue, 2));
@@ -64,7 +64,7 @@
                  this.access.execute((level, pos) -> {
                      IdMap<Holder<Enchantment>> holders = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).asHolderIdMap();
                      int bookcases = 0;
-@@ -97,27 +_,42 @@
+@@ -97,27 +112,42 @@
                          }
                      }
  
@@ -76,19 +76,6 @@
 -                        this.levelClue[ixx] = -1;
 -                        if (this.costs[ixx] < ixx + 1) {
 -                            this.costs[ixx] = 0;
--                        }
--                    }
--
--                    for (int ix = 0; ix < 3; ix++) {
--                        if (this.costs[ix] > 0) {
--                            List<EnchantmentInstance> list = this.getEnchantmentList(level.registryAccess(), itemStack, ix, this.costs[ix]);
--                            if (!list.isEmpty()) {
--                                EnchantmentInstance ench = list.get(this.random.nextInt(list.size()));
--                                this.enchantClue[ix] = holders.getId(ench.enchantment());
--                                this.levelClue[ix] = ench.level();
--                            }
--                        }
--                    }
 +                    fillEnchantmentOffers(this.random, this.enchantmentSeed.get(), bookcases, itemStack, level.registryAccess(), this.costs, this.enchantClue, this.levelClue); // Paper - extracted into net.minecraft.world.inventory.EnchantmentMenu.fillEnchantmentOffers
 +                    // CraftBukkit start
 +                    org.bukkit.inventory.ItemStack craftItemStack = org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitMirror(itemStack);
@@ -107,7 +94,17 @@
 +                            this.costs[j] = 0;
 +                            this.enchantClue[j] = -1;
 +                            this.levelClue[j] = -1;
-+                        }
+                         }
+-                    }
+-
+-                    for (int ix = 0; ix < 3; ix++) {
+-                        if (this.costs[ix] > 0) {
+-                            List<EnchantmentInstance> list = this.getEnchantmentList(level.registryAccess(), itemStack, ix, this.costs[ix]);
+-                            if (!list.isEmpty()) {
+-                                EnchantmentInstance ench = list.get(this.random.nextInt(list.size()));
+-                                this.enchantClue[ix] = holders.getId(ench.enchantment());
+-                                this.levelClue[ix] = ench.level();
+-                            }
 +                        return;
 +                    }
 +
@@ -122,20 +119,20 @@
 +                            if (enchantClue[j] != -1) this.costs[j] = 0;
 +                            this.enchantClue[j] = -1;
 +                            this.levelClue[j] = -1;
-+                        }
-+                    }
+                         }
+                     }
 +                    // CraftBukkit end
  
                      this.broadcastChanges();
                  });
-@@ -131,6 +_,36 @@
+@@ -131,6 +161,36 @@
          }
      }
  
 +    // Paper start - extract offer generation
 +    // Extracted over modifications in place given nearly every line has diff to account for non-instance fields for
 +    // cost, enchantment and level clues.
-+    public static void fillEnchantmentOffers(final RandomSource random, final int seed, final int bookcases, final ItemStack itemStack, final RegistryAccess registryAccess, final int[] costs, final int[] enchantClue, final int[] levelClue) {
++    public static void fillEnchantmentOffers(final RandomSource random, final int seed, final int bookcases, final ItemStack itemStack, final net.minecraft.core.RegistryAccess registryAccess, final int[] costs, final int[] enchantClue, final int[] levelClue) {
 +        random.setSeed(seed);
 +
 +        for (int ixx = 0; ixx < costs.length; ixx++) {
@@ -165,7 +162,7 @@
      @Override
      public boolean clickMenuButton(final Player player, final int buttonId) {
          if (buttonId >= 0 && buttonId < this.costs.length) {
-@@ -148,19 +_,52 @@
+@@ -148,19 +208,52 @@
              }
  
              this.access.execute((level, pos) -> {
@@ -173,7 +170,6 @@
 +                ItemStack enchantmentItem = itemStack; // Paper - diff on change
                  List<EnchantmentInstance> newEnchantment = this.getEnchantmentList(level.registryAccess(), enchantmentItem, buttonId, this.costs[buttonId]);
 -                if (!newEnchantment.isEmpty()) {
--                    player.onEnchantmentPerformed(enchantmentItem, enchantmentCost);
 +                // CraftBukkit start
 +                IdMap<Holder<Enchantment>> registry = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).asHolderIdMap();
 +                if (true || !newEnchantment.isEmpty()) {
@@ -199,14 +195,10 @@
 +                    if (enchantmentItem != itemStack) {
 +                        this.enchantSlots.setItem(0, enchantmentItem);
 +                    }
-                     if (enchantmentItem.is(Items.BOOK)) {
--                        enchantmentItem = itemStack.transmuteCopy(Items.ENCHANTED_BOOK);
++                    if (enchantmentItem.is(Items.BOOK)) {
 +                        enchantmentItem = enchantmentItem.transmuteCopy(Items.ENCHANTED_BOOK);
-                         this.enchantSlots.setItem(0, enchantmentItem);
-                     }
--
--                    for (EnchantmentInstance enchantment : newEnchantment) {
--                        enchantmentItem.enchant(enchantment.enchantment(), enchantment.level());
++                        this.enchantSlots.setItem(0, enchantmentItem);
++                    }
 +                    // Paper end
 +
 +                    // CraftBukkit start
@@ -217,23 +209,32 @@
 +                        }
 +
 +                        enchantmentItem.enchant(enchantment, entry.getValue());
-                     }
-+                    player.onEnchantmentPerformed(enchantmentItem, enchantmentCost);
++                    }
+                     player.onEnchantmentPerformed(enchantmentItem, enchantmentCost);
+-                    if (enchantmentItem.is(Items.BOOK)) {
+-                        enchantmentItem = itemStack.transmuteCopy(Items.ENCHANTED_BOOK);
+-                        this.enchantSlots.setItem(0, enchantmentItem);
+-                    }
+-
+-                    for (EnchantmentInstance enchantment : newEnchantment) {
+-                        enchantmentItem.enchant(enchantment.enchantment(), enchantment.level());
+-                    }
+-
 +                    // CraftBukkit end
- 
++
 +                    // CraftBukkit - TODO: let plugins change this
                      currency.consume(enchantmentCost, player);
                      if (currency.isEmpty()) {
                          this.enchantSlots.setItem(1, ItemStack.EMPTY);
-@@ -185,15 +_,20 @@
-     }
- 
-     private List<EnchantmentInstance> getEnchantmentList(final RegistryAccess access, final ItemStack itemStack, final int slot, final int enchantmentCost) {
+@@ -187,15 +280,20 @@
+     private List<EnchantmentInstance> getEnchantmentList(
+         final HolderGetter.Provider access, final ItemStack itemStack, final int slot, final int enchantmentCost
+     ) {
 -        this.random.setSeed(this.enchantmentSeed.get() + slot);
 +        // Paper start - make static and public
 +        return getEnchantmentList(access, itemStack, slot, enchantmentCost, this.random, this.enchantmentSeed.get());
 +    }
-+    public static List<EnchantmentInstance> getEnchantmentList(final RegistryAccess access, final ItemStack itemStack, final int slot, final int enchantmentCost, final RandomSource random, final int seed) {
++    public static List<EnchantmentInstance> getEnchantmentList(final net.minecraft.core.HolderGetter.Provider access, final ItemStack itemStack, final int slot, final int enchantmentCost, final RandomSource random, final int seed) {
 +        random.setSeed(seed + slot);
 +        // Paper end - make static and public
          Optional<HolderSet.Named<Enchantment>> tag = access.lookupOrThrow(Registries.ENCHANTMENT).get(EnchantmentTags.IN_ENCHANTING_TABLE);
@@ -249,7 +250,7 @@
          }
  
          return list;
-@@ -204,6 +_,12 @@
+@@ -206,6 +304,12 @@
          return goldStack.isEmpty() ? 0 : goldStack.getCount();
      }
  
@@ -262,7 +263,7 @@
      public int getEnchantmentSeed() {
          return this.enchantmentSeed.get();
      }
-@@ -216,6 +_,7 @@
+@@ -218,6 +322,7 @@
  
      @Override
      public boolean stillValid(final Player player) {
@@ -270,7 +271,7 @@
          return stillValid(this.access, player, Blocks.ENCHANTING_TABLE);
      }
  
-@@ -263,4 +_,17 @@
+@@ -265,4 +370,17 @@
  
          return clicked;
      }

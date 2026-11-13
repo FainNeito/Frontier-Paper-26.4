@@ -1,26 +1,59 @@
 --- a/net/minecraft/network/chat/contents/TranslatableContents.java
 +++ b/net/minecraft/network/chat/contents/TranslatableContents.java
-@@ -177,6 +_,16 @@
+@@ -164,31 +164,57 @@
+     @Override
+     public <T> Optional<T> visitUnbounded(final FormattedText.StyledContentConsumer<T> output, final Style currentStyle) {
+         this.decompose();
+-
+-        for (FormattedText part : this.decomposedParts) {
+-            Optional<T> result = part.visitUnbounded(output, currentStyle);
+-            if (result.isPresent()) {
+-                return result;
+-            }
+-        }
+-
+-        return Optional.empty();
++        int[] visited = {0};
++        FormattedText.StyledContentConsumer<T> bounded = (style, text) -> {
++            if (visited[0]++ > 32) throw TranslatableContentConsumer.NESTED_TOO_LONG;
++            return output.accept(style, text);
++        };
++        try {
++            for (FormattedText part : this.decomposedParts) {
++                Optional<T> result = part.visitUnbounded(bounded, currentStyle);
++                if (result.isPresent()) return result;
++            }
++            return Optional.empty();
++        } catch (IllegalArgumentException ignored) {
++            return output.accept(currentStyle, "...");
++        }
+     }
  
      @Override
-     public <T> Optional<T> visit(final FormattedText.ContentConsumer<T> output) {
-+        // Paper start - Count visited parts
+     public <T> Optional<T> visitUnbounded(final FormattedText.ContentConsumer<T> output) {
+         this.decompose();
+-        int decomposedPartsSize = this.decomposedParts.size();
+-
+-        for (int i = 0; i < decomposedPartsSize; i++) {
+-            Optional<T> result = this.decomposedParts.get(i).visitUnbounded(output);
+-            if (result.isPresent()) {
+-                return result;
+-            }
+-        }
+-
+-        return Optional.empty();
+-    }
++        TranslatableContentConsumer<T> bounded = new TranslatableContentConsumer<>(output);
 +        try {
-+            return this.visit(new TranslatableContentConsumer<>(output));
++            for (FormattedText part : this.decomposedParts) {
++                Optional<T> result = part.visitUnbounded(bounded);
++                if (result.isPresent()) return result;
++            }
++            return Optional.empty();
 +        } catch (IllegalArgumentException ignored) {
 +            return output.accept("...");
 +        }
 +    }
-+
-+    private <T> Optional<T> visit(TranslatableContentConsumer<T> output) {
-+        // Paper end - Count visited parts
-         this.decompose();
- 
-         for (FormattedText part : this.decomposedParts) {
-@@ -188,6 +_,27 @@
- 
-         return Optional.empty();
-     }
 +
 +    // Paper start - Count visited parts
 +    private static final class TranslatableContentConsumer<T> implements FormattedText.ContentConsumer<T> {

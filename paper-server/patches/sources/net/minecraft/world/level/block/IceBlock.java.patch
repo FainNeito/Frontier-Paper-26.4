@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/IceBlock.java
 +++ b/net/minecraft/world/level/block/IceBlock.java
-@@ -41,8 +_,14 @@
+@@ -41,8 +41,14 @@
          final BlockState state,
          final @Nullable BlockEntity blockEntity,
          final ItemStack destroyedWith
@@ -16,10 +16,10 @@
          if (!EnchantmentHelper.hasTag(destroyedWith, EnchantmentTags.PREVENTS_ICE_MELTING)) {
              if (level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos)) {
                  level.removeBlock(pos, false);
-@@ -69,7 +_,13 @@
-     }
+@@ -70,7 +76,13 @@
  
      protected void melt(final BlockState state, final Level level, final BlockPos pos) {
+         level.gameEvent(GameEvent.BLOCK_DESTROY, pos, GameEvent.Context.of(state));
 -        if (level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos)) {
 +        // Paper start - call BlockFadeEvent
 +        final boolean waterEvaporates = level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, pos);

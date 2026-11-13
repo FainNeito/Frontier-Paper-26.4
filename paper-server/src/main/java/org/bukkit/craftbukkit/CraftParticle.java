@@ -60,6 +60,9 @@ public abstract class CraftParticle<D> implements Keyed {
     public static net.minecraft.core.particles.ParticleType<?> bukkitToMinecraft(Particle bukkit) {
         Preconditions.checkArgument(bukkit != null);
 
+        if (bukkit == Particle.ITEM_SNOWBALL) {
+            return net.minecraft.core.particles.ParticleTypes.ITEM;
+        }
         return CraftRegistry.getMinecraftRegistry(Registries.PARTICLE_TYPE)
                 .getOptional(CraftNamespacedKey.toMinecraft(bukkit.getKey())).orElseThrow();
     }
@@ -73,6 +76,11 @@ public abstract class CraftParticle<D> implements Keyed {
         }
         if (data != null) {
             Preconditions.checkArgument(particle.getDataType().isInstance(data), "data (%s) should be %s", data.getClass(), particle.getDataType());
+        }
+
+        if (particle == Particle.ITEM_SNOWBALL) {
+            return new ItemParticleOption(net.minecraft.core.particles.ParticleTypes.ITEM,
+                net.minecraft.world.item.Items.SNOWBALL);
         }
 
         CraftParticle<D> craftParticle = (CraftParticle<D>) CraftParticle.CRAFT_PARTICLE_REGISTRY.get(particle.getKey());

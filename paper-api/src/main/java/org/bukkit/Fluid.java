@@ -16,14 +16,18 @@ public interface Fluid extends OldEnum<Fluid>, Keyed {
     // Start generate - Fluid
     Fluid EMPTY = getFluid("empty");
 
-    Fluid FLOWING_LAVA = getFluid("flowing_lava");
-
-    Fluid FLOWING_WATER = getFluid("flowing_water");
-
     Fluid LAVA = getFluid("lava");
 
     Fluid WATER = getFluid("water");
     // End generate - Fluid
+
+    /** @deprecated flowing and source fluids now share a registry type. */
+    @Deprecated(since = "26.4")
+    Fluid FLOWING_LAVA = LAVA;
+
+    /** @deprecated flowing and source fluids now share a registry type. */
+    @Deprecated(since = "26.4")
+    Fluid FLOWING_WATER = WATER;
 
     @NotNull
     private static Fluid getFluid(@NotNull @KeyPattern.Value String key) {

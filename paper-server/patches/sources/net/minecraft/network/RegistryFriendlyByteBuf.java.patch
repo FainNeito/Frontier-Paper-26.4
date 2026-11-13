@@ -1,18 +1,16 @@
 --- a/net/minecraft/network/RegistryFriendlyByteBuf.java
 +++ b/net/minecraft/network/RegistryFriendlyByteBuf.java
-@@ -12,6 +_,15 @@
-         this.registryAccess = registryAccess;
+@@ -20,6 +20,13 @@
+         this.ids = ids;
      }
  
-+    // Paper start - Track codec depth
++    // Paper - Track codec depth, retaining snapshot-8 split registry providers.
 +    public RegistryFriendlyByteBuf(final ByteBuf source, final RegistryFriendlyByteBuf parent) {
-+        super(source);
-+        this.registryAccess = parent.registryAccess;
++        this(source, parent.registries, parent.ids);
 +        this.trackCodecDepth = parent.trackCodecDepth;
 +        this.codecDepth = parent.codecDepth;
 +    }
-+    // Paper end - Track codec depth
 +
-     public RegistryAccess registryAccess() {
-         return this.registryAccess;
+     public HolderGetter.Provider registries() {
+         return this.registries;
      }

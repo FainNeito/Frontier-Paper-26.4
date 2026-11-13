@@ -177,6 +177,12 @@ public class LegacyTest {
             Material.PURPLE_CONCRETE_SLAB, Material.PURPLE_CONCRETE_STAIRS, Material.PURPLE_WOOL_SLAB, Material.PURPLE_WOOL_STAIRS, Material.RED_CONCRETE_SLAB, Material.RED_CONCRETE_STAIRS, Material.RED_POPLAR_LEAVES, Material.RED_SHRUB, Material.RED_WOOL_SLAB, Material.RED_WOOL_STAIRS,
             Material.SHELF_MUSHROOM, Material.STRAW_BED, Material.STRIPPED_POPLAR_LOG, Material.STRIPPED_POPLAR_WOOD, Material.WHITE_CONCRETE_SLAB, Material.WHITE_CONCRETE_STAIRS, Material.WHITE_WOOL_SLAB, Material.WHITE_WOOL_STAIRS, Material.YELLOW_CONCRETE_SLAB, Material.YELLOW_CONCRETE_STAIRS,
             Material.YELLOW_POPLAR_LEAVES, Material.YELLOW_WOOL_SLAB, Material.YELLOW_WOOL_STAIRS,
+            // Snapshot 8 additions likewise have no pre-1.13 numeric material ID.
+            Material.CALCITE_PILLAR, Material.CALCITE_SLAB, Material.CALCITE_STAIRS, Material.CALCITE_WALL, Material.CHISELED_SOULSHALE, Material.MUSIC_DISC_FLURRY, Material.POLISHED_CALCITE, Material.POLISHED_CALCITE_BRICK_SLAB, Material.POLISHED_CALCITE_BRICK_STAIRS, Material.POLISHED_CALCITE_BRICK_WALL, Material.POLISHED_CALCITE_BRICKS, Material.POLISHED_CALCITE_SLAB, Material.POLISHED_CALCITE_STAIRS, Material.POLISHED_CALCITE_WALL, Material.SNOW_BRICK_SLAB, Material.SNOW_BRICK_STAIRS, Material.SNOW_BRICK_WALL, Material.SNOW_BRICKS,
+            // 26.4 snapshot 5: these new materials have no pre-flattening numeric material ID.
+            Material.FROSTBITE_SPAWN_EGG, Material.ICE_BALL, Material.BRITTLE_ICE, Material.CHISELED_PACKED_ICE,
+            Material.ICE_CRYSTAL, Material.ICICLE, Material.PACKED_ICE_BRICK_SLAB, Material.PACKED_ICE_BRICK_STAIRS,
+            Material.PACKED_ICE_BRICK_WALL, Material.PACKED_ICE_BRICKS,
             //
             Material.LEGACY_AIR, Material.LEGACY_DEAD_BUSH, Material.LEGACY_BURNING_FURNACE, Material.LEGACY_WALL_SIGN, Material.LEGACY_REDSTONE_TORCH_OFF, Material.LEGACY_SKULL, Material.LEGACY_REDSTONE_COMPARATOR_ON, Material.LEGACY_WALL_BANNER, Material.LEGACY_MONSTER_EGG));
 

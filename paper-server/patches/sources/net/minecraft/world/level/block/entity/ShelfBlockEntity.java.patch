@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/level/block/entity/ShelfBlockEntity.java
 +++ b/net/minecraft/world/level/block/entity/ShelfBlockEntity.java
-@@ -36,6 +_,47 @@
+@@ -36,6 +36,47 @@
      private final NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
      private boolean alignItemsToBottom;
  
@@ -48,8 +48,8 @@
      public ShelfBlockEntity(final BlockPos worldPosition, final BlockState blockState) {
          super(BlockEntityTypes.SHELF, worldPosition, blockState);
      }
-@@ -64,7 +_,9 @@
-     public CompoundTag getUpdateTag(final HolderLookup.Provider registries) {
+@@ -64,7 +105,9 @@
+     public CompoundTag getUpdateTag(final HolderGetter.Provider registries) {
          try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(this.problemPath(), LOGGER)) {
              TagValueOutput output = TagValueOutput.createWithContext(reporter, registries);
 +            try (io.papermc.paper.util.sanitizer.ItemObfuscationSession _ = io.papermc.paper.util.sanitizer.ItemObfuscationSession.start(io.papermc.paper.configuration.GlobalConfiguration.get().anticheat.obfuscation.items.binding.level)) { // Paper - data sanitization

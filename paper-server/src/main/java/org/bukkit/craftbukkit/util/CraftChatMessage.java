@@ -346,7 +346,7 @@ public final class CraftChatMessage {
                 out.append(ChatFormatting.OBFUSCATED);
                 hadFormat = true;
             }
-            c.getContents().visit((x) -> {
+            c.getContents().visitUnbounded((x) -> {
                 out.append(x);
                 return Optional.empty();
             });

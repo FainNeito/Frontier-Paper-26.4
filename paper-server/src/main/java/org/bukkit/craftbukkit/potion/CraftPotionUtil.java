@@ -29,6 +29,7 @@ public class CraftPotionUtil {
     private static final BiMap<PotionType, PotionType> extendable = ImmutableBiMap.<PotionType, PotionType>builder()
             // Start generate - CraftPotionUtil#extendable
             .put(PotionType.FIRE_RESISTANCE, PotionType.LONG_FIRE_RESISTANCE)
+            .put(PotionType.FREEZING, PotionType.LONG_FREEZING)
             .put(PotionType.INVISIBILITY, PotionType.LONG_INVISIBILITY)
             .put(PotionType.LEAPING, PotionType.LONG_LEAPING)
             .put(PotionType.NIGHT_VISION, PotionType.LONG_NIGHT_VISION)

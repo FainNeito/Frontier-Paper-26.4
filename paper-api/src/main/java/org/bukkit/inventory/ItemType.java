@@ -440,6 +440,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> BRICKS = getItemType("bricks");
 
+    ItemType.Typed<ItemMeta> BRITTLE_ICE = getItemType("brittle_ice");
+
     ItemType.Typed<BannerMeta> BROWN_BANNER = getItemType("brown_banner");
 
     ItemType.Typed<ItemMeta> BROWN_BED = getItemType("brown_bed");
@@ -519,6 +521,27 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> CAKE = getItemType("cake");
 
     ItemType.Typed<ItemMeta> CALCITE = getItemType("calcite");
+
+    // Frontier snapshot 8: blocks and the Flurry music disc use standard ItemMeta.
+    ItemType.Typed<ItemMeta> CALCITE_PILLAR = getItemType("calcite_pillar");
+    ItemType.Typed<ItemMeta> CALCITE_SLAB = getItemType("calcite_slab");
+    ItemType.Typed<ItemMeta> CALCITE_STAIRS = getItemType("calcite_stairs");
+    ItemType.Typed<ItemMeta> CALCITE_WALL = getItemType("calcite_wall");
+    ItemType.Typed<ItemMeta> CHISELED_SOULSHALE = getItemType("chiseled_soulshale");
+    ItemType.Typed<ItemMeta> MUSIC_DISC_FLURRY = getItemType("music_disc_flurry");
+    ItemType.Typed<ItemMeta> POLISHED_CALCITE = getItemType("polished_calcite");
+    ItemType.Typed<ItemMeta> POLISHED_CALCITE_BRICK_SLAB = getItemType("polished_calcite_brick_slab");
+    ItemType.Typed<ItemMeta> POLISHED_CALCITE_BRICK_STAIRS = getItemType("polished_calcite_brick_stairs");
+    ItemType.Typed<ItemMeta> POLISHED_CALCITE_BRICK_WALL = getItemType("polished_calcite_brick_wall");
+    ItemType.Typed<ItemMeta> POLISHED_CALCITE_BRICKS = getItemType("polished_calcite_bricks");
+    ItemType.Typed<ItemMeta> POLISHED_CALCITE_SLAB = getItemType("polished_calcite_slab");
+    ItemType.Typed<ItemMeta> POLISHED_CALCITE_STAIRS = getItemType("polished_calcite_stairs");
+    ItemType.Typed<ItemMeta> POLISHED_CALCITE_WALL = getItemType("polished_calcite_wall");
+    ItemType.Typed<ItemMeta> SNOW_BRICK_SLAB = getItemType("snow_brick_slab");
+    ItemType.Typed<ItemMeta> SNOW_BRICK_STAIRS = getItemType("snow_brick_stairs");
+    ItemType.Typed<ItemMeta> SNOW_BRICK_WALL = getItemType("snow_brick_wall");
+    ItemType.Typed<ItemMeta> SNOW_BRICKS = getItemType("snow_bricks");
+
 
     ItemType.Typed<BlockStateMeta> CALIBRATED_SCULK_SENSOR = getItemType("calibrated_sculk_sensor");
 
@@ -611,6 +634,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> CHISELED_DEEPSLATE = getItemType("chiseled_deepslate");
 
     ItemType.Typed<ItemMeta> CHISELED_NETHER_BRICKS = getItemType("chiseled_nether_bricks");
+
+    ItemType.Typed<ItemMeta> CHISELED_PACKED_ICE = getItemType("chiseled_packed_ice");
 
     ItemType.Typed<ItemMeta> CHISELED_POLISHED_BLACKSTONE = getItemType("chiseled_polished_blackstone");
 
@@ -1236,6 +1261,8 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
 
     ItemType.Typed<ItemMeta> FROGSPAWN = getItemType("frogspawn");
 
+    ItemType.Typed<SpawnEggMeta> FROSTBITE_SPAWN_EGG = getItemType("frostbite_spawn_egg");
+
     ItemType.Typed<BlockStateMeta> FURNACE = getItemType("furnace");
 
     ItemType.Typed<ItemMeta> FURNACE_MINECART = getItemType("furnace_minecart");
@@ -1459,6 +1486,12 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<SpawnEggMeta> HUSK_SPAWN_EGG = getItemType("husk_spawn_egg");
 
     ItemType.Typed<ItemMeta> ICE = getItemType("ice");
+
+    ItemType.Typed<ItemMeta> ICE_BALL = getItemType("ice_ball");
+
+    ItemType.Typed<ItemMeta> ICE_CRYSTAL = getItemType("ice_crystal");
+
+    ItemType.Typed<ItemMeta> ICICLE = getItemType("icicle");
 
     ItemType.Typed<ItemMeta> INFESTED_CHISELED_STONE_BRICKS = getItemType("infested_chiseled_stone_bricks");
 
@@ -2133,6 +2166,14 @@ public interface ItemType extends Keyed, Translatable, net.kyori.adventure.trans
     ItemType.Typed<ItemMeta> OXIDIZED_LIGHTNING_ROD = getItemType("oxidized_lightning_rod");
 
     ItemType.Typed<ItemMeta> PACKED_ICE = getItemType("packed_ice");
+
+    ItemType.Typed<ItemMeta> PACKED_ICE_BRICKS = getItemType("packed_ice_bricks");
+
+    ItemType.Typed<ItemMeta> PACKED_ICE_BRICK_SLAB = getItemType("packed_ice_brick_slab");
+
+    ItemType.Typed<ItemMeta> PACKED_ICE_BRICK_STAIRS = getItemType("packed_ice_brick_stairs");
+
+    ItemType.Typed<ItemMeta> PACKED_ICE_BRICK_WALL = getItemType("packed_ice_brick_wall");
 
     ItemType.Typed<ItemMeta> PACKED_MUD = getItemType("packed_mud");
 

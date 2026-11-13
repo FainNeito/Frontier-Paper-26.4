@@ -42,6 +42,8 @@ public class MobGoalHelper {
         map.put(net.minecraft.world.entity.monster.Creeper.class, Creeper.class);
         map.put(net.minecraft.world.entity.animal.dolphin.Dolphin.class, Dolphin.class);
         map.put(net.minecraft.world.entity.monster.zombie.Drowned.class, Drowned.class);
+        map.put(net.minecraft.world.entity.monster.zombie.RangedZombie.class, RangedZombie.class);
+        map.put(net.minecraft.world.entity.monster.zombie.Frostbite.class, Frostbite.class);
         map.put(net.minecraft.world.entity.boss.enderdragon.EnderDragon.class, EnderDragon.class);
         map.put(net.minecraft.world.entity.monster.Enderman.class, Enderman.class);
         map.put(net.minecraft.world.entity.monster.Endermite.class, Endermite.class);

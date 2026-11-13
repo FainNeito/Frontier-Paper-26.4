@@ -1,6 +1,6 @@
 --- a/net/minecraft/world/item/ItemStack.java
 +++ b/net/minecraft/world/item/ItemStack.java
-@@ -189,9 +_,17 @@
+@@ -193,9 +193,17 @@
                  if (itemStack.isEmpty()) {
                      output.writeVarInt(0);
                  } else {
@@ -19,16 +19,16 @@
                  }
              }
          };
-@@ -203,7 +_,7 @@
+@@ -207,7 +215,7 @@
              public ItemStack decode(final RegistryFriendlyByteBuf input) {
                  ItemStack itemStack = codec.decode(input);
                  if (!itemStack.isEmpty()) {
--                    RegistryOps<Unit> ops = input.registryAccess().createSerializationContext(NullOps.INSTANCE);
-+                    RegistryOps<io.papermc.paper.util.CountingOps.Value> ops = input.registryAccess().createSerializationContext(io.papermc.paper.util.CountingOps.INSTANCE); // Paper - Track codec depth
+-                    RegistryOps<Unit> ops = input.registries().createSerializationContext(NullOps.INSTANCE);
++                    RegistryOps<io.papermc.paper.util.CountingOps.Value> ops = input.registries().createSerializationContext(io.papermc.paper.util.CountingOps.INSTANCE); // Paper - Track codec depth
                      ItemStack.CODEC.encodeStart(ops, itemStack).getOrThrow(DecoderException::new);
                  }
  
-@@ -368,12 +_,144 @@
+@@ -372,12 +380,144 @@
          } else {
              ItemStack stackBeforeUse = this.copy();
              Item usedItem = this.getItem();
@@ -178,7 +178,7 @@
              } else {
                  return result;
              }
-@@ -451,31 +_,67 @@
+@@ -455,31 +595,67 @@
          return this.isDamageableItem() && this.getDamageValue() >= this.getMaxDamage() - 1;
      }
  
@@ -254,7 +254,7 @@
              this.shrink(1);
              onBreak.accept(broken);
          }
-@@ -488,7 +_,26 @@
+@@ -492,7 +668,26 @@
                  return;
              }
  
@@ -282,7 +282,7 @@
              this.applyDamage(newDamage, serverPlayer, i -> {});
          }
      }
-@@ -498,9 +_,14 @@
+@@ -502,9 +697,14 @@
      }
  
      public void hurtAndBreak(final int amount, final LivingEntity owner, final EquipmentSlot slot) {
@@ -298,20 +298,20 @@
              );
          }
      }
-@@ -759,6 +_,12 @@
+@@ -762,6 +962,12 @@
+     public boolean useOnRelease() {
          return this.getItem().useOnRelease(this);
      }
- 
++
 +    // CraftBukkit start
 +    public void restorePatch(DataComponentPatch datacomponentpatch) {
 +        this.components.restorePatch(datacomponentpatch);
 +    }
 +    // CraftBukkit end
-+
+ 
      public <T> @Nullable T set(final DataComponentType<T> type, final @Nullable T value) {
          return this.components.set(type, value);
-     }
-@@ -1031,6 +_,18 @@
+@@ -1035,6 +1241,18 @@
          EnchantmentHelper.forEachModifier(this, slot, consumer);
      }
  
@@ -330,7 +330,7 @@
      public Component getDisplayName() {
          MutableComponent hoverName = Component.empty().append(this.getHoverName());
          if (this.has(DataComponents.CUSTOM_NAME)) {
-@@ -1099,7 +_,7 @@
+@@ -1103,7 +1321,7 @@
      }
  
      public void consume(final int amount, final @Nullable LivingEntity owner) {

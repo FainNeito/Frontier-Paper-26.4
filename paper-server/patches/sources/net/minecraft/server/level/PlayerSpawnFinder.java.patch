@@ -1,9 +1,9 @@
 --- a/net/minecraft/server/level/PlayerSpawnFinder.java
 +++ b/net/minecraft/server/level/PlayerSpawnFinder.java
-@@ -48,7 +_,7 @@
-     }
+@@ -52,7 +52,7 @@
+             return CompletableFuture.completedFuture(Vec3.atBottomCenterOf(spawnSuggestion));
+         }
  
-     public static CompletableFuture<Vec3> findSpawn(final ServerLevel level, final BlockPos spawnSuggestion) {
 -        if (level.getServer().getWorldData().getGameType() == GameType.ADVENTURE) {
 +        if (level.serverLevelData.getGameType() == GameType.ADVENTURE) { // CraftBukkit
              return CompletableFuture.completedFuture(fixupSpawnHeight(level, spawnSuggestion));

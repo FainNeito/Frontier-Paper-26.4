@@ -246,6 +246,16 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
 
     Sound BLOCK_BLASTFURNACE_FIRE_CRACKLE = getSound("block.blastfurnace.fire_crackle");
 
+    Sound BLOCK_BLUE_ICE_BREAK = getSound("block.blue_ice.break");
+
+    Sound BLOCK_BLUE_ICE_FALL = getSound("block.blue_ice.fall");
+
+    Sound BLOCK_BLUE_ICE_HIT = getSound("block.blue_ice.hit");
+
+    Sound BLOCK_BLUE_ICE_PLACE = getSound("block.blue_ice.place");
+
+    Sound BLOCK_BLUE_ICE_STEP = getSound("block.blue_ice.step");
+
     Sound BLOCK_BONE_BLOCK_BREAK = getSound("block.bone_block.break");
 
     Sound BLOCK_BONE_BLOCK_FALL = getSound("block.bone_block.fall");
@@ -257,6 +267,18 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound BLOCK_BONE_BLOCK_STEP = getSound("block.bone_block.step");
 
     Sound BLOCK_BREWING_STAND_BREW = getSound("block.brewing_stand.brew");
+
+    Sound BLOCK_BRITTLE_ICE_BREAK = getSound("block.brittle_ice.break");
+
+    Sound BLOCK_BRITTLE_ICE_CRACK = getSound("block.brittle_ice.crack");
+
+    Sound BLOCK_BRITTLE_ICE_FALL = getSound("block.brittle_ice.fall");
+
+    Sound BLOCK_BRITTLE_ICE_HIT = getSound("block.brittle_ice.hit");
+
+    Sound BLOCK_BRITTLE_ICE_PLACE = getSound("block.brittle_ice.place");
+
+    Sound BLOCK_BRITTLE_ICE_STEP = getSound("block.brittle_ice.step");
 
     Sound BLOCK_BUBBLE_COLUMN_BUBBLE_POP = getSound("block.bubble_column.bubble_pop");
 
@@ -405,6 +427,16 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound BLOCK_CHISELED_BOOKSHELF_PLACE = getSound("block.chiseled_bookshelf.place");
 
     Sound BLOCK_CHISELED_BOOKSHELF_STEP = getSound("block.chiseled_bookshelf.step");
+
+    Sound BLOCK_CHISELED_SOULSHALE_BREAK = getSound("block.chiseled_soulshale.break");
+
+    Sound BLOCK_CHISELED_SOULSHALE_FALL = getSound("block.chiseled_soulshale.fall");
+
+    Sound BLOCK_CHISELED_SOULSHALE_HIT = getSound("block.chiseled_soulshale.hit");
+
+    Sound BLOCK_CHISELED_SOULSHALE_PLACE = getSound("block.chiseled_soulshale.place");
+
+    Sound BLOCK_CHISELED_SOULSHALE_STEP = getSound("block.chiseled_soulshale.step");
 
     Sound BLOCK_CHORUS_FLOWER_DEATH = getSound("block.chorus_flower.death");
 
@@ -692,6 +724,16 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
 
     Sound BLOCK_FROGSPAWN_STEP = getSound("block.frogspawn.step");
 
+    Sound BLOCK_FROSTED_ICE_BREAK = getSound("block.frosted_ice.break");
+
+    Sound BLOCK_FROSTED_ICE_FALL = getSound("block.frosted_ice.fall");
+
+    Sound BLOCK_FROSTED_ICE_HIT = getSound("block.frosted_ice.hit");
+
+    Sound BLOCK_FROSTED_ICE_PLACE = getSound("block.frosted_ice.place");
+
+    Sound BLOCK_FROSTED_ICE_STEP = getSound("block.frosted_ice.step");
+
     Sound BLOCK_FUNGUS_BREAK = getSound("block.fungus.break");
 
     Sound BLOCK_FUNGUS_FALL = getSound("block.fungus.fall");
@@ -791,6 +833,42 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound BLOCK_HONEY_BLOCK_SLIDE = getSound("block.honey_block.slide");
 
     Sound BLOCK_HONEY_BLOCK_STEP = getSound("block.honey_block.step");
+
+    Sound BLOCK_ICE_AMBIENT = getSound("block.ice.ambient");
+
+    Sound BLOCK_ICE_BREAK = getSound("block.ice.break");
+
+    Sound BLOCK_ICE_FALL = getSound("block.ice.fall");
+
+    Sound BLOCK_ICE_HIT = getSound("block.ice.hit");
+
+    Sound BLOCK_ICE_PLACE = getSound("block.ice.place");
+
+    Sound BLOCK_ICE_STEP = getSound("block.ice.step");
+
+    Sound BLOCK_ICE_CRYSTAL_AMBIENT = getSound("block.ice_crystal.ambient");
+
+    Sound BLOCK_ICE_CRYSTAL_BREAK = getSound("block.ice_crystal.break");
+
+    Sound BLOCK_ICE_CRYSTAL_FALL = getSound("block.ice_crystal.fall");
+
+    Sound BLOCK_ICE_CRYSTAL_HIT = getSound("block.ice_crystal.hit");
+
+    Sound BLOCK_ICE_CRYSTAL_PLACE = getSound("block.ice_crystal.place");
+
+    Sound BLOCK_ICE_CRYSTAL_STEP = getSound("block.ice_crystal.step");
+
+    Sound BLOCK_ICICLE_BREAK = getSound("block.icicle.break");
+
+    Sound BLOCK_ICICLE_FALL = getSound("block.icicle.fall");
+
+    Sound BLOCK_ICICLE_HIT = getSound("block.icicle.hit");
+
+    Sound BLOCK_ICICLE_LAND = getSound("block.icicle.land");
+
+    Sound BLOCK_ICICLE_PLACE = getSound("block.icicle.place");
+
+    Sound BLOCK_ICICLE_STEP = getSound("block.icicle.step");
 
     Sound BLOCK_IRON_BREAK = getSound("block.iron.break");
 
@@ -1105,6 +1183,16 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound BLOCK_NYLIUM_PLACE = getSound("block.nylium.place");
 
     Sound BLOCK_NYLIUM_STEP = getSound("block.nylium.step");
+
+    Sound BLOCK_PACKED_ICE_BREAK = getSound("block.packed_ice.break");
+
+    Sound BLOCK_PACKED_ICE_FALL = getSound("block.packed_ice.fall");
+
+    Sound BLOCK_PACKED_ICE_HIT = getSound("block.packed_ice.hit");
+
+    Sound BLOCK_PACKED_ICE_PLACE = getSound("block.packed_ice.place");
+
+    Sound BLOCK_PACKED_ICE_STEP = getSound("block.packed_ice.step");
 
     Sound BLOCK_PACKED_MUD_BREAK = getSound("block.packed_mud.break");
 
@@ -2088,6 +2176,8 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
 
     Sound ENTITY_CHICKEN_PICKY_HURT = getSound("entity.chicken_picky.hurt");
 
+    Sound ENTITY_CHICKEN_PICKY_STEP = getSound("entity.chicken_picky.step");
+
     Sound ENTITY_COD_AMBIENT = getSound("entity.cod.ambient");
 
     Sound ENTITY_COD_DEATH = getSound("entity.cod.death");
@@ -2227,6 +2317,8 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound ENTITY_DROWNED_AMBIENT = getSound("entity.drowned.ambient");
 
     Sound ENTITY_DROWNED_AMBIENT_WATER = getSound("entity.drowned.ambient_water");
+
+    Sound ENTITY_DROWNED_CONVERTED_TO_ZOMBIE = getSound("entity.drowned.converted_to_zombie");
 
     Sound ENTITY_DROWNED_DEATH = getSound("entity.drowned.death");
 
@@ -2381,6 +2473,18 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound ENTITY_FROG_STEP = getSound("entity.frog.step");
 
     Sound ENTITY_FROG_TONGUE = getSound("entity.frog.tongue");
+
+    Sound ENTITY_FROSTBITE_AMBIENT = getSound("entity.frostbite.ambient");
+
+    Sound ENTITY_FROSTBITE_CONVERTED_TO_ZOMBIE = getSound("entity.frostbite.converted_to_zombie");
+
+    Sound ENTITY_FROSTBITE_DEATH = getSound("entity.frostbite.death");
+
+    Sound ENTITY_FROSTBITE_HURT = getSound("entity.frostbite.hurt");
+
+    Sound ENTITY_FROSTBITE_STEP = getSound("entity.frostbite.step");
+
+    Sound ENTITY_FROSTBITE_THROW = getSound("entity.frostbite.throw");
 
     Sound ENTITY_GENERIC_BIG_FALL = getSound("entity.generic.big_fall");
 
@@ -2573,6 +2677,10 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound ENTITY_HUSK_HURT = getSound("entity.husk.hurt");
 
     Sound ENTITY_HUSK_STEP = getSound("entity.husk.step");
+
+    Sound ENTITY_ICE_BALL_BREAK = getSound("entity.ice_ball.break");
+
+    Sound ENTITY_ICE_BALL_THROW = getSound("entity.ice_ball.throw");
 
     Sound ENTITY_ILLUSIONER_AMBIENT = getSound("entity.illusioner.ambient");
 
@@ -2779,6 +2887,8 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound ENTITY_PARROT_IMITATE_ENDERMITE = getSound("entity.parrot.imitate.endermite");
 
     Sound ENTITY_PARROT_IMITATE_EVOKER = getSound("entity.parrot.imitate.evoker");
+
+    Sound ENTITY_PARROT_IMITATE_FROSTBITE = getSound("entity.parrot.imitate.frostbite");
 
     Sound ENTITY_PARROT_IMITATE_GHAST = getSound("entity.parrot.imitate.ghast");
 
@@ -3562,6 +3672,8 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
 
     Sound ENTITY_ZOMBIE_CONVERTED_TO_DROWNED = getSound("entity.zombie.converted_to_drowned");
 
+    Sound ENTITY_ZOMBIE_CONVERTED_TO_FROSTBITE = getSound("entity.zombie.converted_to_frostbite");
+
     Sound ENTITY_ZOMBIE_DEATH = getSound("entity.zombie.death");
 
     Sound ENTITY_ZOMBIE_DESTROY_EGG = getSound("entity.zombie.destroy_egg");
@@ -3604,6 +3716,8 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
 
     Sound ENTITY_ZOMBIE_NAUTILUS_HURT_LAND = getSound("entity.zombie_nautilus.hurt_land");
 
+    Sound ENTITY_ZOMBIE_NAUTILUS_RIDING = getSound("entity.zombie_nautilus.riding");
+
     Sound ENTITY_ZOMBIE_NAUTILUS_SWIM = getSound("entity.zombie_nautilus.swim");
 
     Sound ENTITY_ZOMBIE_VILLAGER_AMBIENT = getSound("entity.zombie_villager.ambient");
@@ -3628,13 +3742,13 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
 
     Sound EVENT_MOB_EFFECT_BAD_OMEN = getSound("event.mob_effect.bad_omen");
 
+    Sound EVENT_MOB_EFFECT_FREEZING = getSound("event.mob_effect.freezing");
+
     Sound EVENT_MOB_EFFECT_RAID_OMEN = getSound("event.mob_effect.raid_omen");
 
     Sound EVENT_MOB_EFFECT_TRIAL_OMEN = getSound("event.mob_effect.trial_omen");
 
     Sound EVENT_RAID_HORN = getSound("event.raid.horn");
-
-    Sound INTENTIONALLY_EMPTY = getSound("intentionally_empty");
 
     Sound ITEM_ARMOR_EQUIP_CHAIN = getSound("item.armor.equip_chain");
 
@@ -3953,6 +4067,8 @@ public interface Sound extends OldEnum<Sound>, Keyed, net.kyori.adventure.sound.
     Sound MUSIC_DISC_CREATOR_MUSIC_BOX = getSound("music_disc.creator_music_box");
 
     Sound MUSIC_DISC_FAR = getSound("music_disc.far");
+
+    Sound MUSIC_DISC_FLURRY = getSound("music_disc.flurry");
 
     Sound MUSIC_DISC_LAVA_CHICKEN = getSound("music_disc.lava_chicken");
 

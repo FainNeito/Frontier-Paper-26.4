@@ -26,8 +26,8 @@ public interface LocaleAwareOps {
     class Registry<T> extends RegistryOps<T> implements LocaleAwareOps {
         private final Locale locale;
 
-        public Registry(final DynamicOps<T> parent, final HolderLookup.Provider lookupProvider, final Locale locale) {
-            super(parent, new RegistryOps.HolderLookupAdapter(lookupProvider));
+        public Registry(final DynamicOps<T> parent, final net.minecraft.core.HolderGetter.Provider lookupProvider, final Locale locale) {
+            super(parent, lookupProvider);
             this.locale = locale;
         }
 

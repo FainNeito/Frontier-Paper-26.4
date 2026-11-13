@@ -34,6 +34,8 @@ public interface JukeboxSong extends Keyed, Translatable {
 
     JukeboxSong FAR = get("far");
 
+    JukeboxSong FLURRY = get("flurry");
+
     JukeboxSong LAVA_CHICKEN = get("lava_chicken");
 
     JukeboxSong MALL = get("mall");

@@ -1,6 +1,17 @@
 --- a/net/minecraft/commands/Commands.java
 +++ b/net/minecraft/commands/Commands.java
-@@ -160,6 +_,7 @@
+@@ -1,6 +1,10 @@
+ package net.minecraft.commands;
+ 
+ import com.mojang.brigadier.CommandDispatcher;
++import com.mojang.brigadier.tree.*;
++import com.mojang.brigadier.builder.ArgumentBuilder;
++import java.util.Map;
++import java.util.HashMap;
+ import com.mojang.brigadier.ParseResults;
+ import com.mojang.brigadier.StringReader;
+ import com.mojang.brigadier.arguments.ArgumentType;
+@@ -135,18 +139,81 @@
  import org.slf4j.Logger;
  
  public class Commands {
@@ -8,30 +19,28 @@
      public static final String COMMAND_PREFIX = "/";
      private static final ThreadLocal<@Nullable ExecutionContext<CommandSourceStack>> CURRENT_EXECUTION_CONTEXT = new ThreadLocal<>();
      private static final Logger LOGGER = LogUtils.getLogger();
-@@ -184,6 +_,7 @@
+-    private final SuggestionBox suggestionBox;
+-    private final ParseBox parseBox;
++    private final CommandDispatcher<CommandSourceStack> dispatcher;
++    private SuggestionBox suggestionBox;
++    private ParseBox parseBox;
++    private boolean commandTreeDirty;
  
-         @Override
-         public boolean isRestricted(final CommandNode<CommandSourceStack> node) {
-+            if (node.getRequirement() instanceof RestrictedMarker marker) return marker.restricted(); // Paper - restricted api
-             Predicate<CommandSourceStack> requirement = node.getRequirement();
-             return !requirement.test(this.noPermissionSource);
-         }
-@@ -191,6 +_,11 @@
-     private final CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
- 
-     public Commands(final Commands.CommandSelection commandSelection, final CommandBuildContext context) {
-+    // Paper start - Brigadier API - modern minecraft overloads that do not use redirects but are copies instead
-+        this(commandSelection, context, false);
+     public Commands(final Consumer<CommandDispatcher<CommandSourceStack>> commandRegistration) {
+-        CommandDispatcher<CommandSourceStack> dispatcher = new CommandDispatcher<>();
++        this.dispatcher = new CommandDispatcher<>();
+         commandRegistration.accept(dispatcher);
+         dispatcher.setConsumer(ExecutionCommandSource.resultConsumer());
+         this.suggestionBox = SuggestionBox.fromFullTree(dispatcher);
+         this.parseBox = ParseBox.fromFullTree(dispatcher);
 +    }
-+    public Commands(final Commands.CommandSelection commandSelection, final CommandBuildContext context, final boolean modern) {
-+    // Paper end - Brigadier API - modern minecraft overloads that do not use redirects but are copies instead
-         AdvancementCommands.register(this.dispatcher);
-         AttributeCommand.register(this.dispatcher, context);
-         ExecuteCommand.register(this.dispatcher, context);
-@@ -305,6 +_,42 @@
-             UnpublishCommand.register(this.dispatcher);
-         }
- 
++
++    public Commands(final CommandSelection selection, final CommandBuildContext context) {
++        this(selection, context, false);
++    }
++
++    public Commands(final CommandSelection selection, final CommandBuildContext context, final boolean modern) {
++        this(dispatcher -> registerVanillaCommands(dispatcher, selection, context));
 +        // Paper start - Vanilla command permission fixes
 +        for (final CommandNode<CommandSourceStack> node : this.dispatcher.getRoot().getChildren()) {
 +            if (node.getRequirement() == com.mojang.brigadier.builder.ArgumentBuilder.<CommandSourceStack>defaultRequirement()) {
@@ -68,59 +77,79 @@
 +                    .redirect(flattenedAliasTarget));
 +        }
 +        // Paper end - Brigadier Command API
-         this.dispatcher.setConsumer(ExecutionCommandSource.resultConsumer());
-     }
- 
-@@ -324,6 +_,13 @@
-     }
- 
-     public void performCommand(final ParseResults<CommandSourceStack> command, final String commandString) {
-+        // Paper start
-+        this.performCommand(command, commandString, false);
++        this.commandTreeDirty = true;
 +    }
 +
-+    public void performCommand(final ParseResults<CommandSourceStack> command, final String commandString, final boolean throwCommandError) {
++    public CommandDispatcher<CommandSourceStack> getDispatcher() {
++        this.commandTreeDirty = true; // Plugins can mutate the returned dispatcher.
++        return this.dispatcher;
++    }
++
++    private void refreshCommandTree() {
++        if (this.commandTreeDirty) {
++            SuggestionBox suggestions = SuggestionBox.fromFullTree(this.dispatcher);
++            ParseBox parser = ParseBox.fromFullTree(this.dispatcher);
++            this.suggestionBox = suggestions;
++            this.parseBox = parser;
++            this.commandTreeDirty = false;
++        }
+     }
+ 
+     public static Commands createVanilla(final Commands.CommandSelection commandSelection, final CommandBuildContext context) {
+@@ -277,7 +344,7 @@
+ 
+     public void performPrefixedCommand(final CommandSourceStack sender, String command) {
+         command = trimOptionalPrefix(command);
+-        performCommand(sender, this.parseBox.parse(command, ParseContext.of(sender)), command);
++        performCommand(sender, this.parseBox().parse(command, ParseContext.of(sender)), command);
+     }
+ 
+     public static String trimOptionalPrefix(final String command) {
+@@ -285,6 +352,11 @@
+     }
+ 
+     public static void performCommand(final CommandSourceStack executionContext, final ParseBox.Result command, final String commandString) {
++        performCommand(executionContext, command, commandString, false);
++    }
++
++    public static void performCommand(final CommandSourceStack executionContext, final ParseBox.Result command, final String commandString, final boolean throwCommandError) {
 +        org.spigotmc.AsyncCatcher.catchOp("Cannot perform command async");
-+        // Paper end
-         CommandSourceStack sender = command.getContext().getSource();
          Profiler.get().push(() -> "/" + commandString);
-         ContextChain<CommandSourceStack> commandChain = finishParsing(command, commandString, sender);
-@@ -337,10 +_,12 @@
-                     )
+         ContextChain<CommandSourceStack> commandChain = finishParsing(command, executionContext);
+ 
+@@ -295,10 +367,11 @@
+                     ec -> ExecutionContext.queueInitialCommandExecution(ec, commandString, commandChain, executionContext, CommandResultCallback.EMPTY)
                  );
              }
 -        } catch (Exception e) {
-+            // Paper start
-+        } catch (Throwable e) { // always gracefully handle it, no matter how bad:tm:
-+            if (throwCommandError) throw e; // rethrow directly if requested
++        } catch (Throwable e) {
++            if (throwCommandError) throw e;
              MutableComponent hover = Component.literal(e.getMessage() == null ? e.getClass().getName() : e.getMessage());
 -            if (LOGGER.isDebugEnabled()) {
 -                LOGGER.error("Command exception: /{}", commandString, e);
-+            LOGGER.error("Command exception: /{}", commandString, e); // Paper - always show execution exception in console log
-+            if (sender.getServer().isDebugging() || LOGGER.isDebugEnabled()) { // Paper - Debugging
++            LOGGER.error("Command exception: /{}", commandString, e);
++            if (executionContext.getServer().isDebugging() || LOGGER.isDebugEnabled()) {
                  StackTraceElement[] stackTrace = e.getStackTrace();
  
                  for (int i = 0; i < Math.min(stackTrace.length, 3); i++) {
-@@ -371,12 +_,16 @@
-             return ContextChain.tryFlatten(command.getContext().build(commandString))
-                 .orElseThrow(() -> CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand().createWithContext(command.getReader()));
+@@ -325,12 +398,14 @@
+         try {
+             return command.unpack();
          } catch (CommandSyntaxException e) {
 -            sender.sendFailure(ComponentUtils.fromMessage(e.getRawMessage()));
-+            // Paper start - Add UnknownCommandEvent
 +            final net.kyori.adventure.text.TextComponent.Builder builder = net.kyori.adventure.text.Component.text();
-+            // sender.sendFailure(ComponentUtils.fromMessage(var7.getRawMessage()));
-+            builder.color(net.kyori.adventure.text.format.NamedTextColor.RED).append(io.papermc.paper.command.brigadier.MessageComponentSerializer.message().deserialize(e.getRawMessage()));
-+            // Paper end - Add UnknownCommandEvent
++            builder.color(net.kyori.adventure.text.format.NamedTextColor.RED)
++                .append(io.papermc.paper.command.brigadier.MessageComponentSerializer.message().deserialize(e.getRawMessage()));
              if (e.getInput() != null && e.getCursor() >= 0) {
                  int cursor = Math.min(e.getInput().length(), e.getCursor());
                  MutableComponent context = Component.empty()
                      .withStyle(ChatFormatting.GRAY)
--                    .withStyle(s -> s.withClickEvent(new ClickEvent.SuggestCommand("/" + commandString)));
-+                    .withStyle(s -> s.withClickEvent(new ClickEvent.SuggestCommand("/" + net.minecraft.util.StringUtil.filterText(commandString)))); // Paper - Filter out disallowed control chars
+-                    .withStyle(s -> s.withClickEvent(new ClickEvent.SuggestCommand("/" + command.commandString())));
++                    .withStyle(s -> s.withClickEvent(new ClickEvent.SuggestCommand("/" + net.minecraft.util.StringUtil.filterText(command.commandString()))));
                  if (cursor > 10) {
                      context.append(CommonComponents.ELLIPSIS);
                  }
-@@ -388,7 +_,17 @@
+@@ -342,7 +417,17 @@
                  }
  
                  context.append(Component.translatable("command.context.here").withStyle(ChatFormatting.RED, ChatFormatting.ITALIC));
@@ -131,7 +160,7 @@
 +                    .append(net.kyori.adventure.text.Component.newline())
 +                    .append(io.papermc.paper.adventure.PaperAdventure.asAdventure(context));
 +            }
-+            org.bukkit.event.command.UnknownCommandEvent event = new org.bukkit.event.command.UnknownCommandEvent(sender, commandString, org.spigotmc.SpigotConfig.unknownCommandMessage.isEmpty() ? null : builder.build());
++            org.bukkit.event.command.UnknownCommandEvent event = new org.bukkit.event.command.UnknownCommandEvent(sender, command.commandString(), org.spigotmc.SpigotConfig.unknownCommandMessage.isEmpty() ? null : builder.build());
 +            org.bukkit.Bukkit.getServer().getPluginManager().callEvent(event);
 +            if (event.message() != null) {
 +                sender.sendFailure(io.papermc.paper.adventure.PaperAdventure.asVanilla(event.message()), false);
@@ -139,13 +168,14 @@
              }
  
              return null;
-@@ -416,10 +_,65 @@
+@@ -370,7 +455,127 @@
      }
  
      public void sendCommands(final ServerPlayer player) {
+-        player.connection.send(this.suggestionBox.toPacket(player));
 +        // Paper start - Send empty commands if tab completion is disabled
 +        if (org.spigotmc.SpigotConfig.tabComplete < 0) {
-+            player.connection.send(new ClientboundCommandsPacket(new RootCommandNode<>(), COMMAND_NODE_INSPECTOR));
++            player.connection.send(SuggestionBox.EMPTY.toPacket(player));
 +            return;
 +        }
 +        // Paper end - Send empty commands if tab completion is disabled
@@ -171,10 +201,8 @@
 +
 +    private void sendAsync(ServerPlayer player, RootCommandNode<CommandSourceStack> dispatcherRoot) {
 +        // Paper end - Perf: Async command map building
-         Map<CommandNode<CommandSourceStack>, CommandNode<CommandSourceStack>> playerCommands = new HashMap<>();
-         RootCommandNode<CommandSourceStack> root = new RootCommandNode<>();
--        playerCommands.put(this.dispatcher.getRoot(), root);
--        fillUsableCommands(this.dispatcher.getRoot(), root, player.createCommandSourceStack(), playerCommands);
++        Map<CommandNode<CommandSourceStack>, CommandNode<CommandSourceStack>> playerCommands = new HashMap<>();
++        RootCommandNode<CommandSourceStack> root = new RootCommandNode<>();
 +        // Paper start - Perf: Async command map building; pass copy of root
 +        playerCommands.put(dispatcherRoot, root);
 +        fillUsableCommands(dispatcherRoot, root, player.createCommandSourceStack(), playerCommands);
@@ -204,21 +232,21 @@
 +            }
 +        }
 +        // CraftBukkit end
-         player.connection.send(new ClientboundCommandsPacket(root, COMMAND_NODE_INSPECTOR));
-     }
- 
-@@ -427,8 +_,49 @@
-         final CommandNode<S> source, final CommandNode<S> target, final S commandFilter, final Map<CommandNode<S>, CommandNode<S>> converted
-     ) {
-         for (CommandNode<S> child : source.getChildren()) {
++        player.connection.send(SuggestionBox.fromFullTree(new CommandDispatcher<>(root)).toPacket(player));
++    }
++
++    private static <S> void fillUsableCommands(
++        final CommandNode<S> source, final CommandNode<S> target, final S commandFilter, final Map<CommandNode<S>, CommandNode<S>> converted
++    ) {
++        for (CommandNode<S> child : source.getChildren()) {
 +            // Paper start - Brigadier API
 +            if (child.clientNode != null) {
 +                child = child.clientNode;
 +            }
 +            // Paper end - Brigadier API
 +            if (!org.spigotmc.SpigotConfig.sendNamespaced && child.getName().contains(":")) continue; // Spigot
-             if (child.canUse(commandFilter)) {
-                 ArgumentBuilder<S, ?> builder = child.createBuilder();
++            if (child.canUse(commandFilter)) {
++                ArgumentBuilder<S, ?> builder = child.createBuilder();
 +                // Paper start
 +                /*
 +                Because of how commands can be yeeted right left and center due to bad bukkit practices
@@ -254,6 +282,31 @@
 +                    builder = redirectBuilder;
 +                }
 +                // Paper end
-                 if (builder.getRedirect() != null) {
-                     builder.redirect(converted.get(builder.getRedirect()));
-                 }
++                if (builder.getRedirect() != null) {
++                    builder.redirect(converted.get(builder.getRedirect()));
++                }
++
++                CommandNode<S> node = builder.build();
++                converted.put(child, node);
++                target.addChild(node);
++                if (!child.getChildren().isEmpty()) {
++                    fillUsableCommands(child, node, commandFilter, converted);
++                }
++            }
++        }
+     }
+ 
+     public static LiteralArgumentBuilder<CommandSourceStack> literal(final String literal) {
+@@ -393,10 +598,12 @@
+     }
+ 
+     public SuggestionBox suggestionBox() {
++        this.refreshCommandTree();
+         return this.suggestionBox;
+     }
+ 
+     public ParseBox parseBox() {
++        this.refreshCommandTree();
+         return this.parseBox;
+     }
+ 

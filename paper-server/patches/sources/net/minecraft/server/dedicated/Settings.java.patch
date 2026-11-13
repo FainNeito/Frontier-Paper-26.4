@@ -1,14 +1,15 @@
 --- a/net/minecraft/server/dedicated/Settings.java
 +++ b/net/minecraft/server/dedicated/Settings.java
-@@ -26,12 +_,26 @@
+@@ -26,12 +26,26 @@
  public abstract class Settings<T extends Settings<T>> {
      private static final Logger LOGGER = LogUtils.getLogger();
      public final Properties properties;
+-
+-    public Settings(final Properties properties) {
 +    private static final boolean skipComments = Boolean.getBoolean("Paper.skipServerPropertiesComments"); // Paper - allow skipping server.properties comments
 +    // CraftBukkit start
 +    private joptsimple.OptionSet options = null;
- 
--    public Settings(final Properties properties) {
++
 +    public Settings(final Properties properties, final joptsimple.OptionSet options) {
          this.properties = properties;
 +        this.options = options;
@@ -28,7 +29,7 @@
          try {
              try (InputStream is = Files.newInputStream(file)) {
                  CharsetDecoder reportingUtf8Decoder = StandardCharsets.UTF_8
-@@ -57,7 +_,53 @@
+@@ -57,7 +71,53 @@
      }
  
      public void store(final Path output) {
@@ -83,7 +84,7 @@
              this.properties.store(os, "Minecraft server properties");
          } catch (IOException e) {
              LOGGER.error("Failed to store properties to file: {}", output);
-@@ -87,7 +_,7 @@
+@@ -87,7 +147,7 @@
      }
  
      public @Nullable String getStringRaw(final String key) {
@@ -92,7 +93,7 @@
      }
  
      protected <V> @Nullable V getLegacy(final String key, final Function<String, V> deserializer) {
-@@ -101,6 +_,16 @@
+@@ -101,6 +161,16 @@
      }
  
      protected <V> V get(final String key, final Function<String, @Nullable V> deserializer, final Function<V, String> serializer, final V defaultValue) {
@@ -109,17 +110,17 @@
          String value = this.getStringRaw(key);
          V result = MoreObjects.firstNonNull(value != null ? deserializer.apply(value) : null, defaultValue);
          this.properties.put(key, serializer.apply(result));
-@@ -183,7 +_,7 @@
+@@ -183,7 +253,7 @@
          return result;
      }
  
--    protected abstract T reload(final RegistryAccess registryAccess, final Properties properties);
-+    protected abstract T reload(final RegistryAccess registryAccess, final Properties properties, final joptsimple.OptionSet options); // CraftBukkit
+-    protected abstract T reload(HolderGetter.Provider registryAccess, Properties properties);
++    protected abstract T reload(HolderGetter.Provider registryAccess, Properties properties, final joptsimple.OptionSet options); // CraftBukkit
  
      public class MutableValue<V> implements Supplier<V> {
          private final String key;
-@@ -204,7 +_,7 @@
-         public T update(final RegistryAccess registryAccess, final V value) {
+@@ -204,7 +274,7 @@
+         public T update(final HolderGetter.Provider registryAccess, final V value) {
              Properties properties = Settings.this.cloneProperties();
              properties.put(this.key, this.serializer.apply(value));
 -            return Settings.this.reload(registryAccess, properties);
